@@ -557,9 +557,64 @@
           <h2>Thread Network <span style="color: #0ea2bd">Control</span></h2>
           <p>The control for the devices on your network will be here.</p>
         </div>
+        <div class="device">
+          <p>Device Id : </p>
+        </div>
+        <div class="row" style="margin-bottom: 1rem;">
+          <div class="col-md-6">
+            <h3>Add devices</h3>
+            <form action="" enctype='application/json' method="post" id="add_device_form">
+              <p>Device Id</p>
+              <input name="deviceId" type="text" class="form-control"/>
+              <p>Device Password</p>
+              <input name="devicePassword" type="password" class="form-control"/>
+              <input name="addButton" type="submit" value="Add device">
+            </form>
+          </div>
+          <div class="col-md-6">
+            <h3>Device list</h3>
+            <select name="devices" id="deviceList"></select>
+          </div>
+        </div>
+        <div id="lightControlPage" class="row" style="background-color: green;">
+          <h3>Ampoule</h3>
+          <p>Device Id : </p>
+          <p>Status : (On/Off/Disconnected)</p>
+          <p>Temperature</p>
+          <input type="range" id="lightTemperature" min="0" max="10">
+          <p>Intensite</p>
+          <input type="range" id="lightIntensity" min="0" max="10">
+        </div>
+        <div id="dimmerControlPage" class="row" style="background-color: red;">
+          <h3>Gradateur</h3>
+          <p>Device Id : </p>
+          <p>Status : (On/Off/Disconnected)</p>
+          <p>Intensite</p>
+          <input type="range" id="dimmerIntensity" min="0" max="10">
+        </div>
+        <div id="sensorControlPage" class="row" style="background-color: yellow;">
+          <h3>Capteur d'environnement</h3>
+          <p>Device Id : </p>
+          <p>Status : (On/Off/Disconnected)</p>
+          <div class="row">
+            <p>Temperature</p>
+            <p></p>
+          </div>
+          <div class="row">
+            <p>Humidity</p>
+            <p> all</p>
+          </div>
+          <div class="row">
+            <p>Luminosity</p>
+            <p></p>
+          </div>
+          <div class="row">
+            <p>Mouvement</p>
+            <p></p>
+          </div>
+        </div>
         <div class="part">
           <hr />
-
           <hr />
         </div>
       </div>
