@@ -2,117 +2,146 @@
 <html lang="en-US">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>OpenHouse Interface</title>
-    <link href="/static/style.css" type="text/css" rel="stylesheet" />
-    <script src="/static/restful.js" defer="true"></script>
-    <link href="/favicon.ico" rel="icon" />
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>OpenHouse Interface</title>
+  <link href="/static/style.css" type="text/css" rel="stylesheet" />
+  <script src="/static/restful.js" defer="true"></script>
+  <link href="/favicon.ico" rel="icon" />
 
-    <!-- <link href="/static/bootstrap.min.css" rel="stylesheet"> -->
-    <!--  <script src="/static/jquery.min.js"></script> -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <style>
-      .container {
-        width: 1500px;
-      }
-    </style>
-  </head>
+  <!-- <link href="/static/bootstrap.min.css" rel="stylesheet"> -->
+  <!--  <script src="/static/jquery.min.js"></script> -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
 
 <body>
-  <header
-      id="header"
-      class="header fixed-top sticked"
-      data-scrollto-offset="0"
-    >
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <h1>OpenHouse Interface</h1>
-          </div>
+  <header id="header" class="pageHeader" data-scrollto-offset="0">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h1>OpenHouse Interface</h1>
         </div>
       </div>
-    </header>
-  <main id="main">
-    
-<section id="Control" class="sub-section"></section>
-      <div class="container">
-        <div class="section-header default-margin">
-          <h2>Thread Network <span style="color: #0ea2bd">Control</span></h2>
-          <p>The control for the devices on your network will be here.</p>
-        </div>
-        <div class="device">
-          <p>Device Id : </p>
-        </div>
-        <div class="row" style="margin-bottom: 1rem;">
-          <div class="col-md-6">
-            <h3>Add devices</h3>
-            <form action="" enctype='application/json' method="post" id="add_device_form">
-              <p>Device Id</p>
-              <input name="deviceId" type="text" class="form-control"/>
-              <p>Device Password</p>
-              <input name="devicePassword" type="password" class="form-control"/>
-              <input name="addButton" type="submit" value="Add device">
-            </form>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <section id="Control" class="sub-section">
+      <div class="header">
+        <h2>Centre de controle du réseau</h2>
+      </div>
+      <div class="row">
+        <h3 class="title-section">Ajoutez un appareil</h3>
+        <form action="javascript:addDevice()" placeholder="Ajouter un appareil" id="addDevice">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="deviceId">Id de l'appareil</label>
+              <input name="id" type="text" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label for="devicePassword">Mot de passe de l'appareil</label>
+              <input name="password" type="text" class="form-control" required />
+            </div>
           </div>
-          <div class="col-md-6">
-            <h3>Device list</h3>
-            <select name="devices" id="deviceList"></select>
+          <div class="btn-section">
+            <input name="addButton" type="submit" class="btn btn-primary" value="Ajouter un appareil" />
           </div>
+        </form>
+      </div>
+      <div id="deviceModal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>
+              Créer les informations de l'appareil
+            </h3>
+          </div>
+
+          <form action="javascript:createDevice()">
+            <label for="id">Id</label>
+            <input type="text" disabled id="formModalId" name="id">
+            <label for="name">Nom</label>
+            <input type="text" name="name">
+            <label for="type">Type</label>
+            <select name="type">
+              <option selected disabled>Sélectionner un type</option>
+              <option value="light">Ampoule</option>
+              <option value="dimmer">Gradateur</option>
+              <option value="sensor">Capteur d'environnement</option>
+            </select>
+            <div class="btn-section">
+              <input name="addButton" type="submit" class="btn btn-primary"
+                value="Créer les informations de l'appareil" />
+            </div>
+          </form>
         </div>
-        <div id="lightControlPage" class="row" style="background-color: green;">
-          <h3>Ampoule</h3>
-          <p>Device Id : </p>
-          <p>Status : (On/Off/Disconnected)</p>
+      </div>
+      <div class="row" id="devicesList">
+        <h3 class="section-title">Liste des appareils sur le réseaux</h3>
+        <table class="devices-table">
+          <thead id="devicesListHead">
+            <tr>
+              <th>Id</th>
+              <th>Nom</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="devicesListBody">
+          </tbody>
+        </table>
+    </section>
+    <section>
+      <div id="lightControlPage" class="row" style="background-color: green">
+        <h3>Ampoule</h3>
+        <p>Device Id :</p>
+        <p>Status : (On/Off/Disconnected)</p>
+        <p>Temperature</p>
+        <input type="range" id="lightTemperature" min="0" max="10" />
+        <p>Intensite</p>
+        <input type="range" id="lightIntensity" min="0" max="10" />
+      </div>
+      <div id="dimmerControlPage" class="row" style="background-color: red">
+        <h3>Gradateur</h3>
+        <p>Device Id :</p>
+        <p>Status : (On/Off/Disconnected)</p>
+        <p>Intensite</p>
+        <input type="range" id="dimmerIntensity" min="0" max="10" />
+      </div>
+      <div id="sensorControlPage" class="row" style="background-color: yellow">
+        <h3>Capteur d'environnement</h3>
+        <p>Device Id :</p>
+        <p>Status : (On/Off/Disconnected)</p>
+        <div class="row">
           <p>Temperature</p>
-          <input type="range" id="lightTemperature" min="0" max="10">
-          <p>Intensite</p>
-          <input type="range" id="lightIntensity" min="0" max="10">
+          <p></p>
         </div>
-        <div id="dimmerControlPage" class="row" style="background-color: red;">
-          <h3>Gradateur</h3>
-          <p>Device Id : </p>
-          <p>Status : (On/Off/Disconnected)</p>
-          <p>Intensite</p>
-          <input type="range" id="dimmerIntensity" min="0" max="10">
+        <div class="row">
+          <p>Humidity</p>
+          <p>all</p>
         </div>
-        <div id="sensorControlPage" class="row" style="background-color: yellow;">
-          <h3>Capteur d'environnement</h3>
-          <p>Device Id : </p>
-          <p>Status : (On/Off/Disconnected)</p>
-          <div class="row">
-            <p>Temperature</p>
-            <p></p>
-          </div>
-          <div class="row">
-            <p>Humidity</p>
-            <p> all</p>
-          </div>
-          <div class="row">
-            <p>Luminosity</p>
-            <p></p>
-          </div>
-          <div class="row">
-            <p>Mouvement</p>
-            <p></p>
-          </div>
+        <div class="row">
+          <p>Luminosity</p>
+          <p></p>
         </div>
-        <div class="part">
-          <hr />
-          <hr />
+        <div class="row">
+          <p>Mouvement</p>
+          <p></p>
         </div>
+      </div>
+      <div class="part">
+        <hr />
+        <hr />
+      </div>
       </div>
     </section>
-    <section id="Automation" class="sub-section"></section>
+    <section id="Automation" class="sub-section">
       <div class="container">
         <div class="section-header default-margin">
-          <h2>Thread Network <span style="color: #0ea2bd">Automation</span></h2>
-          <p>The diffrent automations</p>
+          <h2>
+            Thread Network <span style="color: #0ea2bd">Automation</span>
+          </h2>
+          <p>The different automations</p>
         </div>
         <div class="part">
           <hr />
@@ -124,27 +153,37 @@
       <div class="container">
         <div class="section-header default-margin">
           <h2>Thread Network <span style="color: #0ea2bd">Topology</span></h2>
-          <p>The network topology structure of Thread will be shown in a more intuitive and detailed manner here.</p>
+          <p>
+            The network topology structure of Thread will be shown in a more
+            intuitive and detailed manner here.
+          </p>
         </div>
         <div class="part">
           <hr />
           <div class="row">
             <div class="col-md-3 col-md-offset-1">
-              <h4 style="font-weight:800">Network Name: &nbsp;<span id="topology_netwotkname" style="color: gray;">
-                  unknown</span></h4>
-            </div>
-            <div class="col-md-2">
-              <h4 style="font-weight:800">Leader: &nbsp;<span id="topology_leader" style="color: gray;"> unknown</span>
+              <h4 style="font-weight: 800">
+                Network Name: &nbsp;<span id="topology_netwotkname" style="color: gray">
+                  unknown</span>
               </h4>
             </div>
-            <div class="col-md-3">
-              <h4 style="font-weight:800">Router Number: &nbsp;<span id="topology_router_number" style="color: gray;">
+            <div class="col-md-2">
+              <h4 style="font-weight: 800">
+                Leader: &nbsp;<span id="topology_leader" style="color: gray">
                   unknown</span>
               </h4>
             </div>
             <div class="col-md-3">
-              <button id="btn_topology" type="submit" value="Running" style="font-weight: bold;"
-                onclick="http_server_build_thread_network_topology(this)">Start Topology</button>
+              <h4 style="font-weight: 800">
+                Router Number: &nbsp;<span id="topology_router_number" style="color: gray">
+                  unknown</span>
+              </h4>
+            </div>
+            <div class="col-md-3">
+              <button id="btn_topology" type="submit" value="Running" style="font-weight: bold"
+                onclick="http_server_build_thread_network_topology(this)">
+                Start Topology
+              </button>
             </div>
           </div>
           <hr />
@@ -154,25 +193,12 @@
         </div>
       </div>
     </section>
-    
-    <div id="log_window" class="dialog" style="padding-top: 10px;">
-      <div class="dialog-content" style="width: 400px; padding-top: 10px;">
-        <div id = "log_window_title"><span style="font-size: 30px;">Tip:</span></div>
-        <div style="width:100%; height:2px; border-top:1px solid #cecaca; clear:both;"></div>
-        <div class="row" style="text-align: center; padding-top: 20px; font-size: 18px;">
-          <p id = "log_window_content" style="display: inline-block;">Known</p>
-        </div>
-        <button type = "button" class="dialog-button" style ="width: 60px; height: 30px; " onclick="frontend_log_close(this)">Okay</button>
-      </div>
-    </div>
   </main>
   <footer id="footer" class="footer">
     <div class="footer-legal text-center">
       <h2>Interface désigné par OpenHouse 2024</h2>
-            
     </div>
   </footer>
 </body>
 
 </html>
-
