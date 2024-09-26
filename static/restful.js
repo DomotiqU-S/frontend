@@ -40,6 +40,7 @@ function createDevice() {
     data[item[0]] = item[1];
   }
   data["id"] = document.getElementById("formModalId").value;
+  data["status"] = "Actif";
   modal.style.display = "none";
   form.reset();
   addDeviceInTable(data);
@@ -71,12 +72,45 @@ function addDeviceInTable(deviceData) {
     const cell = newRow.insertCell();
     cell.innerHTML = value;
   }
-  document.getElementById("devicesList").style.display = "table";
+  newRow.onclick = () => showDevicePage(deviceData);
+  document.getElementById("devicesList").style.display = "block";
 }
+
+function showDevicePage(deviceData) {
+  alert("showing device page");
+  // document.getElementById(deviceData["id"]).style.display = "block";
+}
+
 //Remove devices table if no devices are present
 document.addEventListener("DOMContentLoaded", () => {
+  // fetch("/get-devices", {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  // })
+  //   .then((res) => res.json())
+  //   .then((result) => {
+  //     console.log(result);
+  //     addDeviceInTable(result);
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     alert("Error adding device");
+  //   });
   const tds = document.getElementById("devicesList").getElementsByTagName("td");
   if (tds.length === 0) {
     document.getElementById("devicesList").style.display = "none";
   }
 });
+
+function updateRangeValue(id) {
+  const range = document.getElementById(id);
+  const value = document.getElementById(`${id}Value`);
+  value.innerHTML = range.value;
+  range.addEventListener("input", () => {
+    value.innerHTML = range.value;
+  });
+}
+updateRangeValue("lightTemp");
+updateRangeValue("lightInten");
