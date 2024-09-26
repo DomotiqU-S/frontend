@@ -78,6 +78,37 @@
       </div>
       <!-- MODAL -->
     </section>
+
+
+    <section id="availableDevices" class="sub-section">
+      <div class="controlPage deviceList">
+        <div class="deviceButton on">
+          <h4>Light</h4>
+          <h6>Device Name</h6>
+        </div>
+        <div class="deviceButton off">
+          <h4>Dimmer</h4>
+          <h6>Device Name</h6>
+        </div>
+        <div class="deviceButton unavailable">
+          <h4>Sensor</h4>
+          <h6>Device Name</h6>
+        </div>
+        <div class="deviceButton"></div>
+        <div class="deviceButton"></div>
+
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+
+
     <section id="devicesList" class="sub-section">
       <div class="row">
         <h3 class="section-title">Liste des appareils sur le réseaux</h3>
@@ -96,7 +127,7 @@
       </div>
     </section>
     <section class="sub-section">
-      <div id="lightControlPage">
+      <div id="lightControlPage" class="controlPage">
         <form action="">
           <h3>Ampoule</h3>
           <p>Device Id : {id}</p>
@@ -133,7 +164,7 @@
       </div>
     </section>
     <section>
-      <div id="dimmerControlPage" class="row" style="background-color: red">
+      <div id="dimmerControlPage" class="controlPage">
         <h3>Gradateur</h3>
         <p>Device Id :</p>
         <p>Status : (On/Off/Disconnected)</p>
@@ -142,7 +173,7 @@
       </div>
     </section>
     <section>
-      <div id="sensorControlPage" class="row" style="background-color: yellow">
+      <div id="sensorControlPage" class="controlPage">
         <h3>Capteur d'environnement</h3>
         <p>Device Id :</p>
         <p>Status : (On/Off/Disconnected)</p>
