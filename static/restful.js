@@ -107,9 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
 function updateRangeValue(id) {
   const range = document.getElementById(id);
   const value = document.getElementById(`${id}Value`);
-  value.innerHTML = range.value;
-  range.addEventListener("input", () => {
+  if (!range || !value) return;
+  if (id.includes("Temp")) {
+    value.innerHTML = range.value + "K";
+  } else if (id.includes("Inten")) {
+    value.innerHTML = range.value + "%";
+  } else {
     value.innerHTML = range.value;
+  }
+  range.addEventListener("input", () => {
+    if (range.name.includes("temp")) {
+      value.innerHTML = range.value + "K";
+    } else if (range.name.includes("inten")) {
+      value.innerHTML = range.value + "%";
+    } else {
+      value.innerHTML = range.value;
+    }
   });
 }
 updateRangeValue("lightTemp");
