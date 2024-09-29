@@ -108,13 +108,14 @@ function updateRangeValue(id) {
   const range = document.getElementById(id);
   const value = document.getElementById(`${id}Value`);
   if (!range || !value) return;
-  if (id.includes("Temp")) {
+  if (id.includes("Temperature")) {
     value.innerHTML = range.value + "K";
-  } else if (id.includes("Inten")) {
+  } else if (id.includes("Intensity")) {
     value.innerHTML = range.value + "%";
   } else {
     value.innerHTML = range.value;
   }
+
   range.addEventListener("input", () => {
     if (range.name.includes("temp")) {
       value.innerHTML = range.value + "K";
@@ -125,5 +126,46 @@ function updateRangeValue(id) {
     }
   });
 }
-updateRangeValue("lightTemp");
-updateRangeValue("lightInten");
+updateRangeValue("lightIntensity");
+updateRangeValue("lightTemperature");
+updateRangeValue("dimmerIntensity");
+
+
+function setLightData() {
+  const name = page.getElementById("lightName");
+  name.innerHTML = "test light name";
+
+  const status = document.getElementById("lightStatus")
+  status.style = "background: red;"
+
+  const intensity = document.getElementById("lightIntensity");
+
+  const temperature = document.getElementById("lightTemperature");
+}
+
+function setDimmerData() {
+  const name = document.getElementById("dimmerName");
+  name.innerHTML = "test dimmer name";
+
+  const status = document.getElementById("dimmerStatus")
+  status.style = "background: red;"
+
+  const intensity = document.getElementById("dimmerIntensity");
+}
+
+function setSensorData() {
+  const name = document.getElementById("sensorName");
+  name.innerHTML = "test sensor name";
+
+  const status = document.getElementById("sensorStatus")
+  status.style = "background: red;"
+
+  const temperature = document.getElementById("sensorTemperature");
+  const humidity = document.getElementById("sensorHumidity");
+  const Luminosity = document.getElementById("sensorLuminosity");
+  const mouvement = document.getElementById("sensorMouvement");
+}
+
+setLightData();
+setDimmerData();
+setSensorData();
