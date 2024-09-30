@@ -120,74 +120,86 @@
 
     <section id="lightControlSection" class="sub-section">
       <div id="lightControlPage" class="controlPage">
-        <div class="title">
-          <h3>Ampoule</h3>
-          <div id="lightStatus" class="statusBadge"></div>     
-        </div>
-        <p>Name : <span id="lightName"> Temp</span></p>
+        <div class="controlPageHeader">
+          <div class="title">
+            <h3>Ampoule</h3>
+            <div id="lightStatus" class="statusBadge"></div>     
+          </div>
 
-        <div class="split"></div>
+          <button id="deleteLight">Delete</button>
+        </div>
+
+        <div class="stats">
+          <p>Name : <span id="lightName"> Temp</span></p>
+        </div>
 
         <div class="controls">
-          <form action="">
-  
-            <div class="row">
-              <div class="col-md-6">
-                <p>ON / OFF</p>
-                <label class="switch">
-                  <input type="checkbox" >
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <div class="col-md-6">
-  
-                <div style="display: flex; flex-direction: column;">
-                  <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
-                  <input type="range" name="intensity" id="lightIntensity" min="0" max="100" step="5" class="intensityGradient"/>
-                </div>
-                <br>
+          <div class="row">
+            <div class="col-md-6">
+              <p>ON / OFF</p>
+              <label class="switch">
+                <input type="checkbox" >
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="col-md-6">
 
-                <div style="display: flex; flex-direction: column;">
-                  <label for="intensity">Intensité : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
-                  <input type="range" name="temp" id="lightTemperature" min="2700" max="6500" class="tempSlider tempGradient" step="100"/>
-                </div>
+              <div style="display: flex; flex-direction: column;">
+                <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
+                <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5" class="intensityGradient"/>
+              </div>
+              <br>
+
+              <div style="display: flex; flex-direction: column;">
+                <label for="intensity">Intensité : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
+                <input type="range" name="temp" id="lightTemperature" min="2700" max="6500" class="tempSlider tempGradient" step="100"/>
               </div>
             </div>
-            <br>
-          </form>
+          </div>
         </div>
       </div>
     </section>
 
     <section id="dimmerControlSection" class="sub-section">
       <div id="dimmerControlPage" class="controlPage">
-        <div class="title">
-          <h3>Gradateur</h3>
-          <div id="dimmerStatus" class="statusBadge"> </div>          
-        </div>
-        <p>Name : <span id="dimmerName"> Temp</span></p>
+        <div class="controlPageHeader">
+          <div class="title">
+            <h3>Gradateur</h3>
+            <div id="dimmerStatus" class="statusBadge"> </div>          
+          </div>
 
-        <div class="split"></div>
-
-        <div style="display: flex; flex-direction: column;">
-          <label for="intensity">Intensité : <span class="rangeValue2" id="dimmerIntensityValue"></span></label>
-          <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5" class="intensityGradient"/>
+          <button id="deleteDimmer">Delete</button>
         </div>
-                
+
+        <div class="stats">
+          <p>Name : <span id="dimmerName"> Temp</span></p>
+        </div>
+
+        <div class="controls">
+          <div style="display: flex; flex-direction: column;">
+            <label for="intensity">Intensité : <span class="rangeValue2" id="dimmerIntensityValue"></span></label>
+            <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5" class="intensityGradient"/>
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="sensorControlSection" class="sub-section">
       <div id="sensorControlPage" class="controlPage">
-        <div class="title">
-          <h3>Capteur d'environnement</h3>
-          <div id="sensorStatus" class="statusBadge"> </div>          
+        <div class="controlPageHeader">
+          <div class="title">
+            <h3>Capteur d'environnement</h3>
+            <div id="sensorStatus" class="statusBadge"> </div>          
+          </div>
+
+          <button id="deleteSensor">Delete</button>
         </div>
-        <p>Name : <span id="sensorName"> Temp</span></p>
 
-        <div class="split"></div>
-
-        <div class="">
+        <div class="stats">
+          <p>Name : <span id="sensorName"> Temp</span></p>
+        </div>
+        
+        <div class="stats">
           <p>Temperature : <span id="sensorTemperature"></span></p>
           <p>Humidity : <span id="sensorHumidity"></span></p>
           <p>Luminosity : <span id="sensorLuminosity"></span></p>

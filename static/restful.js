@@ -139,8 +139,10 @@ function setLightData() {
   status.style = "background: red;"
 
   const intensity = document.getElementById("lightIntensity");
+  //intensity.value = "75";
 
   const temperature = document.getElementById("lightTemperature");
+  //temperature.value = "3000";
 }
 
 function setDimmerData() {
@@ -167,5 +169,5 @@ function setSensorData() {
 }
 
 setLightData();
-setDimmerData();
-setSensorData();
+//setDimmerData();
+//setSensorData();

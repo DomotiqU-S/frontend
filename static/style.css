@@ -114,24 +114,37 @@ section {
 .controlPage {
   border: 1px dashed red;
   border-radius: 10px;
-  padding: 10px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 10px;
 
-
-  .title {
-    display: flex;
-    gap:10px;
-
-    
+  > *:not(:last-child) {
+    border-bottom: 1px black solid;
+    padding-bottom: 5px;
   }
 
-  
+  h3 {
+    margin: 0;
+  }
 
-  .split {
-    background: black; height: 1px;
+  .controlPageHeader {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start;
+
+    .title {
+      display: flex;
+      gap:10px;
+      align-items: center;
+    }
+  }
+
+  .stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .controls {
@@ -139,11 +152,21 @@ section {
   }
 }
 
+
+
 .statusBadge {
-  width: 50px;
-  height: 50px;
+  width: 25px;
+  height: 25px;
   background-color: green;
-  border-radius: 25px;
+  border-radius: 10px;
+
+  &.off {
+    background-color: red;
+  }
+
+  &.unavailable {
+    background-color: gray;
+  }
 }
 
 .deviceList {
