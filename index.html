@@ -154,14 +154,14 @@
             </div>
             <div class="col-md-9">
 
-              <div style="display: flex; flex-direction: column;">
+              <div>
                 <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
                 <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
                   class="intensityGradient" />
               </div>
               <br>
 
-              <div style="display: flex; flex-direction: column;">
+              <div>
                 <label for="temp">Température : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
                 <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
                   class="tempSlider tempGradient" step="100" />
@@ -188,10 +188,32 @@
         </div>
 
         <div class="controls">
-          <div style="display: flex; flex-direction: column;">
-            <label for="intensity">Intensité : <span class="rangeValue2" id="dimmerIntensityValue"></span></label>
-            <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5"
-              class="intensityGradient" />
+          <div class="row center">
+            <div class="col-md-3 flex-center">
+
+              <label class="switch">
+                <input type="checkbox" id="lightPower">
+                <span class="slider"></span>
+              </label>
+
+              <div class="vertical-switch-section">
+                <p class="top">ON</p>
+                <label class="vertical-switch">
+                  <input type="checkbox">
+                  <span class="vertical-slider"></span>
+                </label>
+                <p class="bottom">OFF</p>
+              </div>
+
+            </div>
+            <div class="col-md-9">
+
+              <div>
+                <label for="intensity">Intensité : <span class="rangeValue2" id="dimmerIntensityValue"></span></label>
+                <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5"
+                  class="intensityGradient" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -221,7 +243,7 @@
       </div>
     </section>
 
-    <section id="Automation" class="sub-section">
+    <section id="Automation" class="sub-section" style="display: none;">
       <div class="container">
         <div class="section-header default-margin">
           <h2>
@@ -235,7 +257,7 @@
         </div>
       </div>
     </section>
-    <section id="Topology" class="sub-section">
+    <section id="Topology" class="sub-section" style="display: none;">
       <div class="container">
         <div class="section-header default-margin">
           <h2>Thread Network <span style="color: #0ea2bd">Topology</span></h2>

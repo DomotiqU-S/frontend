@@ -67,17 +67,48 @@ function createDevice() {
 function addDeviceInTable(deviceData) {
   const table = document.getElementById("devicesListBody");
   const newRow = table.insertRow();
-  for (const value of Object.values(deviceData)) {
-    const cell = newRow.insertCell();
-    cell.innerHTML = value;
-  }
-  newRow.onclick = () => showDevicePage(deviceData);
+  const id = newRow.insertCell();
+  id.innerHTML = deviceData["id"];
+  const name = newRow.insertCell();
+  name.innerHTML = deviceData["name"];
+  const type = newRow.insertCell();
+  type.innerHTML = deviceData["type"];
+  const status = newRow.insertCell();
+  status.innerHTML = deviceData["status"];
+
+  newRow.onclick = () => {
+    const children = table.children;
+    for (let i = 0; i < children.length; i++) {
+      children[i].style.backgroundColor = "white";
+    }
+    newRow.style.backgroundColor = "lightblue";
+    showDevicePage(deviceData);
+  };
+
   document.getElementById("devicesList").style.display = "block";
 }
 
 function showDevicePage(deviceData) {
-  alert("showing device page");
-  // document.getElementById(deviceData["id"]).style.display = "block";
+  console.log(deviceData);
+  const lightPage = document.getElementById("lightControlPage");
+  const dimmerPage = document.getElementById("dimmerControlPage");
+  const sensorPage = document.getElementById("sensorControlPage");
+  if (deviceData["type"] === "Ampoule") {
+    lightPage.style.display = "block";
+    dimmerPage.style.display = "none";
+    sensorPage.style.display = "none";
+    setLightData(deviceData);
+  } else if (deviceData["type"] === "Gradateur") {
+    lightPage.style.display = "none";
+    dimmerPage.style.display = "block";
+    sensorPage.style.display = "none";
+    setDimmerData(deviceData);
+  } else if (deviceData["type"] === "Capteur d'environnement") {
+    lightPage.style.display = "none";
+    dimmerPage.style.display = "none";
+    sensorPage.style.display = "block";
+    setSensorData(deviceData);
+  }
 }
 
 //Remove devices table if no devices are present
@@ -105,16 +136,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setLightData(data) {
   const name = document.getElementById("lightName");
-  name.innerHTML = "test light name";
+  name.innerHTML = data.name;
 
   const status = document.getElementById("lightStatus");
-  status.style = "background: red;";
+  if (data.status === "Inactif") {
+    status.classList.add("off");
+  }
+  if (data.status === "Non disponible") {
+    status.classList.add("unavailable");
+  }
 
   const intensity = document.getElementById("lightIntensity");
-  intensity.value = "75";
+  intensity.value = data.intensity;
 
   const temperature = document.getElementById("lightTemperature");
-  temperature.value = "3000";
+  temperature.value = data.temperature;
   const power = document.getElementById("lightPower");
 }
 
@@ -123,7 +159,12 @@ function setDimmerData(data) {
   name.innerHTML = "test dimmer name";
 
   const status = document.getElementById("dimmerStatus");
-  status.style = "background: red;";
+  if (data.status === "Inactif") {
+    status.classList.add("off");
+  }
+  if (data.status === "Non disponible") {
+    status.classList.add("unavailable");
+  }
 
   const intensity = document.getElementById("dimmerIntensity");
   intensity.value = "75";
@@ -134,7 +175,12 @@ function setSensorData(data) {
   name.innerHTML = "test sensor name";
 
   const status = document.getElementById("sensorStatus");
-  status.style = "background: red;";
+  if (data.status === "Inactif") {
+    status.classList.add("off");
+  }
+  if (data.status === "Non disponible") {
+    status.classList.add("unavailable");
+  }
 
   const temperature = document.getElementById("sensorTemperature");
   temperature.innerHTML = "3000";
@@ -145,10 +191,6 @@ function setSensorData(data) {
   const mouvement = document.getElementById("sensorMouvement");
   mouvement.innerHTML = "Détecté";
 }
-
-setLightData();
-setDimmerData();
-setSensorData();
 
 function updateRangeValue(id) {
   const range = document.getElementById(id);
