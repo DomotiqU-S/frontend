@@ -130,13 +130,13 @@ section {
   }
 
   .controlPageHeader {
-    display: flex; 
-    justify-content: space-between; 
+    display: flex;
+    justify-content: space-between;
     align-items: flex-start;
 
     .title {
       display: flex;
-      gap:10px;
+      gap: 10px;
       align-items: center;
     }
   }
@@ -146,13 +146,7 @@ section {
     flex-direction: column;
     gap: 10px;
   }
-
-  .controls {
-
-  }
 }
-
-
 
 .statusBadge {
   width: 25px;
@@ -222,11 +216,15 @@ input[type="range"] {
   border: 1px solid black;
 
   &.intensityGradient {
-    background-image: linear-gradient(to right, black , white);
+    background-image: linear-gradient(to right, black, white);
   }
 
   &.tempGradient {
-    background-image: linear-gradient(to right, rgb(255,167, 87) , rgb(255,254, 250));
+    background-image: linear-gradient(
+      to right,
+      rgb(255, 167, 87),
+      rgb(255, 254, 250)
+    );
   }
 }
 
@@ -256,7 +254,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .rangeZone {
-  position: relative;;
+  position: relative;
   display: flex;
   height: 51px;
   width: 100%;
@@ -285,24 +283,18 @@ input[type="range"]::-moz-range-thumb {
   font-weight: bolder;
 }
 
-
-
-/* The switch - the box around the slider */
-.switch {
+/* .switch {
   position: relative;
   display: inline-block;
   width: 60px;
   height: 34px;
 }
-
-/* Hide default HTML checkbox */
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The slider */
 .slider {
   position: absolute;
   cursor: pointer;
@@ -311,8 +303,8 @@ input[type="range"]::-moz-range-thumb {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -323,16 +315,16 @@ input[type="range"]::-moz-range-thumb {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {
@@ -340,12 +332,72 @@ input:checked + .slider:before {
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
-
-/* Rounded sliders */
 .slider.round {
   border-radius: 34px;
 }
 
 .slider.round:before {
   border-radius: 50%;
+}
+*/
+/*
+$switch-width: 20px;
+$switch-height: 80px;
+$slider-width: 30px;
+$slider-height: 30px;
+// Colors
+$slider-color: #4e4d4d;
+$circle-color: #d9d3d3;
+*/
+.vertical-switch-section {
+  display: flex;
+  padding: 20px 30px;
+  background: #656a70;
+  border-radius: 10px;
+  box-shadow: 0px 10px 10px #73909324, 0px 20px 20px #73909324;
+}
+.vertical-switch {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 80px;
+}
+
+.vertical-slider {
+  cursor: pointer;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #4e4d4d;
+  border: 1px solid #00000008;
+  border-radius: 10px;
+}
+.vertical-slider::before {
+  position: absolute;
+  content: "";
+  bottom: 0;
+  left: calc((100% - 50px) / 2);
+  width: 50px;
+  height: 20px;
+  border-radius: 20px;
+  background: #d9d3d3;
+  transition: all 400ms cubic-bezier(1, 0, 0.01, 1.01);
+}
+input[type="checkbox"] {
+  display: none;
+}
+input:checked + .vertical-slider:before {
+  transform: translateY(calc(100% - 80px));
+}
+input[type="checkbox"] {
+  display: none;
+}
+input:checked + .vertical-slider:before {
+  transform: translateY(calc(100% - 80px));
+}
+.flex-center {
+  display: flex;
+  justify-content: flex-start;
+  align-items: start;
+  flex-direction: column;
 }

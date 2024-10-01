@@ -65,7 +65,6 @@ function createDevice() {
 }
 
 function addDeviceInTable(deviceData) {
-  console.log(deviceData);
   const table = document.getElementById("devicesListBody");
   const newRow = table.insertRow();
   for (const value of Object.values(deviceData)) {
@@ -104,6 +103,53 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function setLightData(data) {
+  const name = document.getElementById("lightName");
+  name.innerHTML = "test light name";
+
+  const status = document.getElementById("lightStatus");
+  status.style = "background: red;";
+
+  const intensity = document.getElementById("lightIntensity");
+  intensity.value = "75";
+
+  const temperature = document.getElementById("lightTemperature");
+  temperature.value = "3000";
+  const power = document.getElementById("lightPower");
+}
+
+function setDimmerData(data) {
+  const name = document.getElementById("dimmerName");
+  name.innerHTML = "test dimmer name";
+
+  const status = document.getElementById("dimmerStatus");
+  status.style = "background: red;";
+
+  const intensity = document.getElementById("dimmerIntensity");
+  intensity.value = "75";
+}
+
+function setSensorData(data) {
+  const name = document.getElementById("sensorName");
+  name.innerHTML = "test sensor name";
+
+  const status = document.getElementById("sensorStatus");
+  status.style = "background: red;";
+
+  const temperature = document.getElementById("sensorTemperature");
+  temperature.innerHTML = "3000";
+  const humidity = document.getElementById("sensorHumidity");
+  humidity.innerHTML = "50";
+  const Luminosity = document.getElementById("sensorLuminosity");
+  Luminosity.innerHTML = "50";
+  const mouvement = document.getElementById("sensorMouvement");
+  mouvement.innerHTML = "Détecté";
+}
+
+setLightData();
+setDimmerData();
+setSensorData();
+
 function updateRangeValue(id) {
   const range = document.getElementById(id);
   const value = document.getElementById(`${id}Value`);
@@ -129,45 +175,3 @@ function updateRangeValue(id) {
 updateRangeValue("lightIntensity");
 updateRangeValue("lightTemperature");
 updateRangeValue("dimmerIntensity");
-
-
-function setLightData() {
-  const name = page.getElementById("lightName");
-  name.innerHTML = "test light name";
-
-  const status = document.getElementById("lightStatus")
-  status.style = "background: red;"
-
-  const intensity = document.getElementById("lightIntensity");
-  //intensity.value = "75";
-
-  const temperature = document.getElementById("lightTemperature");
-  //temperature.value = "3000";
-}
-
-function setDimmerData() {
-  const name = document.getElementById("dimmerName");
-  name.innerHTML = "test dimmer name";
-
-  const status = document.getElementById("dimmerStatus")
-  status.style = "background: red;"
-
-  const intensity = document.getElementById("dimmerIntensity");
-}
-
-function setSensorData() {
-  const name = document.getElementById("sensorName");
-  name.innerHTML = "test sensor name";
-
-  const status = document.getElementById("sensorStatus")
-  status.style = "background: red;"
-
-  const temperature = document.getElementById("sensorTemperature");
-  const humidity = document.getElementById("sensorHumidity");
-  const Luminosity = document.getElementById("sensorLuminosity");
-  const mouvement = document.getElementById("sensorMouvement");
-}
-
-setLightData();
-//setDimmerData();
-//setSensorData();
