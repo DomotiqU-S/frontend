@@ -1,3 +1,78 @@
+const deviceType = {
+  light: "Ampoule",
+  dimmer: "Gradateur",
+  sensor: "Capteur d'environnement"
+};
+
+const deviceStatus = {
+  on: "On",
+  off: "Off",
+  unavailable: "Unavailable"
+}
+
+const mockData = [
+  {
+    id: "aaaaa",
+    type: deviceType.light,
+    status: deviceStatus.on,
+    name: "Light 1",
+    intensity: "75",
+    temperature: "3000"
+  },
+  {
+    id: "bbbbb",
+    type: deviceType.dimmer,
+    status: deviceStatus.unavailable,
+    name: "Dimmer 1",
+    
+    
+    intensity: "75",
+  },
+  {
+    id: "ccccc",
+    type: deviceType.sensor,
+    status: deviceStatus.off,
+    name: "Sensor 1",
+    temperature: "75",
+    humidity: "40",
+    luminosity: "100",
+    mouvement: "yes"
+  }
+]
+
+function initSetup() {
+  // Load devices types
+  const select = document.getElementById("deviceTypeSelection");
+
+  for (var d in deviceType) {
+    const opt = document.createElement('option');
+    opt.value = deviceType[d];
+    opt.innerHTML = deviceType[d];
+    select.appendChild(opt);
+  }
+
+  // Load devices in device list
+  mockData.forEach((i) => {
+    addDeviceInTable(i);
+  });
+
+
+  // setup range
+  setupRangeValue("lightIntensity");
+  setupRangeValue("lightTemperature");
+  setupRangeValue("dimmerIntensity");
+}
+
+initSetup();
+
+
+function cancelAdd() {
+  const modal = document.getElementById("deviceModal");
+  modal.style.display = "none";
+}
+
+
+
 function addDevice() {
   const form = document.getElementById("addDevice");
   const formData = new FormData(form);
@@ -65,6 +140,10 @@ function createDevice() {
 }
 
 function addDeviceInTable(deviceData) {
+  console.log(deviceData);
+
+
+
   const table = document.getElementById("devicesListBody");
   const newRow = table.insertRow();
   const id = newRow.insertCell();
@@ -93,17 +172,17 @@ function showDevicePage(deviceData) {
   const lightPage = document.getElementById("lightControlPage");
   const dimmerPage = document.getElementById("dimmerControlPage");
   const sensorPage = document.getElementById("sensorControlPage");
-  if (deviceData["type"] === "Ampoule") {
+  if (deviceData["type"] === deviceType.light) {
     lightPage.style.display = "block";
     dimmerPage.style.display = "none";
     sensorPage.style.display = "none";
     setLightData(deviceData);
-  } else if (deviceData["type"] === "Gradateur") {
+  } else if (deviceData["type"] === deviceType.dimmer) {
     lightPage.style.display = "none";
     dimmerPage.style.display = "block";
     sensorPage.style.display = "none";
     setDimmerData(deviceData);
-  } else if (deviceData["type"] === "Capteur d'environnement") {
+  } else if (deviceData["type"] === deviceType.sensor) {
     lightPage.style.display = "none";
     dimmerPage.style.display = "none";
     sensorPage.style.display = "block";
@@ -134,53 +213,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function changeValue(e) {
+  console.log("checked");
+}
+
 function setLightData(data) {
   const name = document.getElementById("lightName");
   name.innerHTML = data.name;
 
-  const status = document.getElementById("lightStatus");
-  if (data.status === "Inactif") {
-    status.classList.add("off");
-  }
-  if (data.status === "Non disponible") {
-    status.classList.add("unavailable");
-  }
+  setDevicePageStatus("lightStatus", data.status)
 
-  const intensity = document.getElementById("lightIntensity");
-  intensity.value = data.intensity;
+  const temp = document.getElementById("lightPower");
+  temp.value = false;
 
-  const temperature = document.getElementById("lightTemperature");
-  temperature.value = data.temperature;
-  const power = document.getElementById("lightPower");
+  setRangeValue("lightIntensity", data.intensity);
+  setRangeValue("lightTemperature", data.temperature);
 }
 
 function setDimmerData(data) {
   const name = document.getElementById("dimmerName");
-  name.innerHTML = "test dimmer name";
+  name.innerHTML = data.name;
 
-  const status = document.getElementById("dimmerStatus");
-  if (data.status === "Inactif") {
-    status.classList.add("off");
-  }
-  if (data.status === "Non disponible") {
-    status.classList.add("unavailable");
-  }
-
-  const intensity = document.getElementById("dimmerIntensity");
-  intensity.value = "75";
+  setDevicePageStatus("dimmerStatus", data.status);
+  
+  setRangeValue("dimmerIntensity", data.intensity);
 }
 
 function setSensorData(data) {
   const name = document.getElementById("sensorName");
-  name.innerHTML = "test sensor name";
+  name.innerHTML = data.name;
 
-  const status = document.getElementById("sensorStatus");
-  if (data.status === "Inactif") {
-    status.classList.add("off");
-  }
-  if (data.status === "Non disponible") {
-    status.classList.add("unavailable");
-  }
+  setDevicePageStatus("sensorStatus", data.status);
 
   const temperature = document.getElementById("sensorTemperature");
   temperature.innerHTML = "3000";
@@ -192,10 +255,11 @@ function setSensorData(data) {
   mouvement.innerHTML = "Détecté";
 }
 
-function updateRangeValue(id) {
+function setupRangeValue(id) {
   const range = document.getElementById(id);
   const value = document.getElementById(`${id}Value`);
   if (!range || !value) return;
+
   if (id.includes("Temperature")) {
     value.innerHTML = range.value + "K";
   } else if (id.includes("Intensity")) {
@@ -214,6 +278,25 @@ function updateRangeValue(id) {
     }
   });
 }
-updateRangeValue("lightIntensity");
-updateRangeValue("lightTemperature");
-updateRangeValue("dimmerIntensity");
+
+function setRangeValue(id, value) {
+  const range = document.getElementById(id);
+  range.value = value;
+  range.dispatchEvent(new Event('input'));
+}
+
+function setDevicePageStatus(id, value) {
+  const status = document.getElementById(id);
+
+  switch(value) {
+    case deviceStatus.on:
+      status.classList.add("on");
+      break;
+    case deviceStatus.off:
+      status.classList.add("off");
+      break;
+    default:
+      status.classList.add("unavailable");
+  }
+}
+
