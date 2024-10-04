@@ -1,14 +1,14 @@
 const deviceType = {
   light: "Ampoule",
   dimmer: "Gradateur",
-  sensor: "Capteur d'environnement"
+  sensor: "Capteur d'environnement",
 };
 
 const deviceStatus = {
   on: "On",
   off: "Off",
-  unavailable: "Unavailable"
-}
+  unavailable: "Unavailable",
+};
 
 const mockData = [
   {
@@ -17,15 +17,14 @@ const mockData = [
     status: deviceStatus.on,
     name: "Light 1",
     intensity: "75",
-    temperature: "3000"
+    temperature: "3000",
   },
   {
     id: "bbbbb",
     type: deviceType.dimmer,
     status: deviceStatus.unavailable,
     name: "Dimmer 1",
-    
-    
+
     intensity: "75",
   },
   {
@@ -36,16 +35,16 @@ const mockData = [
     temperature: "75",
     humidity: "40",
     luminosity: "100",
-    mouvement: "yes"
-  }
-]
+    mouvement: "yes",
+  },
+];
 
 function initSetup() {
   // Load devices types
   const select = document.getElementById("deviceTypeSelection");
 
   for (var d in deviceType) {
-    const opt = document.createElement('option');
+    const opt = document.createElement("option");
     opt.value = deviceType[d];
     opt.innerHTML = deviceType[d];
     select.appendChild(opt);
@@ -56,7 +55,6 @@ function initSetup() {
     addDeviceInTable(i);
   });
 
-
   // setup range
   setupRangeValue("lightIntensity");
   setupRangeValue("lightTemperature");
@@ -65,13 +63,10 @@ function initSetup() {
 
 initSetup();
 
-
 function cancelAdd() {
   const modal = document.getElementById("deviceModal");
   modal.style.display = "none";
 }
-
-
 
 function addDevice() {
   const form = document.getElementById("addDevice");
@@ -140,10 +135,6 @@ function createDevice() {
 }
 
 function addDeviceInTable(deviceData) {
-  console.log(deviceData);
-
-
-
   const table = document.getElementById("devicesListBody");
   const newRow = table.insertRow();
   const id = newRow.insertCell();
@@ -213,18 +204,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function changeValue(e) {
-  console.log("checked");
-}
-
 function setLightData(data) {
   const name = document.getElementById("lightName");
   name.innerHTML = data.name;
 
-  setDevicePageStatus("lightStatus", data.status)
-
+  setDevicePageStatus("lightStatus", data.status);
+  const form = document.getElementById("lightForm");
+  new FormData(form).set("id", data.id);
   const temp = document.getElementById("lightPower");
-  temp.value = false;
+  temp.checked = data.status === deviceStatus.on;
 
   setRangeValue("lightIntensity", data.intensity);
   setRangeValue("lightTemperature", data.temperature);
@@ -235,7 +223,7 @@ function setDimmerData(data) {
   name.innerHTML = data.name;
 
   setDevicePageStatus("dimmerStatus", data.status);
-  
+
   setRangeValue("dimmerIntensity", data.intensity);
 }
 
@@ -282,21 +270,17 @@ function setupRangeValue(id) {
 function setRangeValue(id, value) {
   const range = document.getElementById(id);
   range.value = value;
-  range.dispatchEvent(new Event('input'));
+  range.dispatchEvent(new Event("input"));
 }
 
 function setDevicePageStatus(id, value) {
   const status = document.getElementById(id);
-
-  switch(value) {
+  switch (value) {
     case deviceStatus.on:
-      status.classList.add("on");
-      break;
     case deviceStatus.off:
-      status.classList.add("off");
+      status.classList.add("available");
       break;
     default:
-      status.classList.add("unavailable");
+      status.classList.remove("available");
   }
 }
-

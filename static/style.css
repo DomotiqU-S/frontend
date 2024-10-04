@@ -14,7 +14,7 @@ section {
   width: 100% !important;
   margin-bottom: 20px !important;
   margin: 0 !important;
-  &.center{
+  &.center {
     align-items: center !important;
     display: flex !important;
   }
@@ -156,15 +156,10 @@ section {
 .statusBadge {
   width: 25px;
   height: 25px;
-  background-color: green;
+  background-color: gray;
   border-radius: 100%;
-
-  &.off {
-    background-color: red;
-  }
-
-  &.unavailable {
-    background-color: gray;
+  &.available {
+    background-color: green;
   }
 }
 

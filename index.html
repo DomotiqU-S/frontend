@@ -69,7 +69,7 @@
             <div class="btn-section">
               <input name="addButton" type="submit" class="btn btn-primary"
                 value="Créer les informations de l'appareil" />
-              <input name="cancelButton" type="button" class="btn btn-primary" value="Annuler" onclick="cancelAdd()"/>
+              <input name="cancelButton" type="button" class="btn btn-primary" value="Annuler" onclick="cancelAdd()" />
             </div>
           </form>
         </div>
@@ -132,40 +132,37 @@
         </div>
 
         <div class="controls">
-          <div class="row">
-            <div class="col-md-3 flex-center">
+          <form action="" id="lightForm">
+            <div class="row">
+              <div class="col-md-3 flex-center">
 
-              <label class="switch">
-                <input type="checkbox" id="lightPower">
-                <span class="slider"></span>
-              </label>
+                <div class="vertical-switch-section">
+                  <p class="top">ON</p>
+                  <label class="vertical-switch">
+                    <input type="checkbox" id="lightPower">
+                    <span class="vertical-slider"></span>
+                  </label>
+                  <p class="bottom">OFF</p>
+                </div>
 
-              <div class="vertical-switch-section">
-                <p class="top">ON</p>
-                <label class="vertical-switch">
-                  <input type="checkbox">
-                  <span class="vertical-slider"></span>
-                </label>
-                <p class="bottom">OFF</p>
               </div>
+              <div class="col-md-9">
 
-            </div>
-            <div class="col-md-9">
+                <div>
+                  <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
+                  <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
+                    class="intensityGradient" />
+                </div>
+                <br>
 
-              <div>
-                <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
-                <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
-                  class="intensityGradient" />
-              </div>
-              <br>
-
-              <div>
-                <label for="temp">Température : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
-                <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
-                  class="tempSlider tempGradient" step="100" />
+                <div>
+                  <label for="temp">Température : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
+                  <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
+                    class="tempSlider tempGradient" step="100" />
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </section>
