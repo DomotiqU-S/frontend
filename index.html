@@ -131,39 +131,36 @@
           <p>Name : <span id="lightName"></span></p>
         </div>
 
-        <div class="controls">
-          <form action="" id="lightForm">
-            <div class="row">
-              <div class="col-md-3 flex-center">
-
-                <div class="vertical-switch-section">
-                  <p class="top">ON</p>
-                  <label class="vertical-switch">
-                    <input type="checkbox" id="lightPower">
-                    <span class="vertical-slider"></span>
-                  </label>
-                  <p class="bottom">OFF</p>
-                </div>
-
-              </div>
-              <div class="col-md-9">
-
-                <div>
-                  <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
-                  <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
-                    class="intensityGradient" />
-                </div>
-                <br>
-
-                <div>
-                  <label for="temp">Température : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
-                  <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
-                    class="tempSlider tempGradient" step="100" />
-                </div>
+        <form action="" id="lightForm">
+          <div class="controls">
+            <div class="flex-center">
+              <div class="vertical-switch-section">
+                <p class="top">ON</p>
+                <label class="vertical-switch">
+                  <input type="checkbox" id="lightPower">
+                  <span class="vertical-slider"></span>
+                </label>
+                <p class="bottom">OFF</p>
               </div>
             </div>
-          </form>
-        </div>
+  
+            <div>
+              <div>
+                <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
+                <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
+                  class="intensityGradient" />
+              </div>
+              <br>
+  
+              <div>
+                <label for="temp">Température : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
+                <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
+                  class="tempSlider tempGradient" step="100" />
+              </div>
+            </div>
+          </div>
+        </form>
+        
       </div>
     </section>
 
@@ -182,15 +179,15 @@
           <p>Name : <span id="dimmerName"></span></p>
         </div>
 
-        <div class="controls">
-          <div class="row center">
-            <div class="col-md-3 flex-center">
 
+        <form action="" id="dimmerForm">
+          <div class="controls">
+            <div>
               <label class="switch">
                 <input type="checkbox" id="lightPower">
                 <span class="slider"></span>
               </label>
-
+  
               <div class="vertical-switch-section">
                 <p class="top">ON</p>
                 <label class="vertical-switch">
@@ -199,18 +196,15 @@
                 </label>
                 <p class="bottom">OFF</p>
               </div>
-
             </div>
-            <div class="col-md-9">
-
-              <div>
-                <label for="intensity">Intensité : <span class="rangeValue2" id="dimmerIntensityValue"></span></label>
-                <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5"
-                  class="intensityGradient" />
-              </div>
+  
+            <div>
+              <label for="intensity">Intensité : <span class="rangeValue2" id="dimmerIntensityValue"></span></label>
+              <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5"
+                class="intensityGradient" />
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </section>
 
