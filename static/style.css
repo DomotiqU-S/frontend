@@ -357,3 +357,65 @@ input:checked + .vertical-slider:before {
   align-items: start;
   flex-direction: column;
 }
+
+
+.testNico {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 10px;
+}
+
+
+.deviceCard {
+  width: 150px;
+  
+  padding: 10px;
+  border-radius: 10px;
+
+  border: 2px solid black;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 10px;
+
+  background-color: white;
+
+  &.unavailable {
+    background-color: lightgray;
+  }
+  
+  &.selected {
+    background-color: lightblue;
+  }
+}
+
+.deviceCardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.deviceCardData {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.icon {
+  font-size: 32px !important;
+
+  &.on {
+    color: green;
+  }
+
+  &.off {
+    color: red;
+  }
+
+  &.unavailable {
+    color: gray;
+  }
+}

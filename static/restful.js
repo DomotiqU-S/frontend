@@ -53,6 +53,7 @@ function initSetup() {
   // Load devices in device list
   mockData.forEach((i) => {
     addDeviceInTable(i);
+    addAvailableDevice(i);
   });
 
   // setup range
@@ -156,6 +157,93 @@ function addDeviceInTable(deviceData) {
   };
 
   document.getElementById("devicesList").style.display = "block";
+}
+
+function addAvailableDevice(deviceData) {
+  const {id, name, type, status} = deviceData;
+
+  // Create the card
+  const card = document.createElement("button");
+  card.classList.add("deviceCard")
+
+  // Device status
+  if(status === deviceStatus.unavailable) {
+    card.setAttribute("disabled", true);
+    card.classList.add("unavailable");
+  }
+
+  // Set icon header
+  const header = document.createElement("div");
+  header.classList.add("deviceCardHeader");
+  const deviceIcon = getDeviceIcon(type);
+
+  const statusIcon = document.createElement("div");
+  statusIcon.innerHTML = "power_settings_circle";
+  statusIcon.classList.add("material-symbols-outlined");
+  statusIcon.classList.add("icon");
+
+  if(status === deviceStatus.on) {
+    statusIcon.classList.add("on")
+  } else if (status === deviceStatus.off) {
+    statusIcon.classList.add("off")
+  }
+
+  header.appendChild(deviceIcon);
+  header.appendChild(statusIcon);
+
+  card.appendChild(header);
+
+  const dataContainer = document.createElement("div");
+  dataContainer.classList.add("deviceCardData");
+
+
+
+
+  // Device Id
+  const idField = document.createElement("div");
+  idField.innerHTML = "Id : " + id;
+  dataContainer.appendChild(idField);
+
+  // Device Name
+  const nameField = document.createElement("div");
+  nameField.innerHTML = "Name : " + name;
+  dataContainer.appendChild(nameField);
+
+  card.appendChild(dataContainer);
+  
+  card.onclick = () => {
+    const childrens = table.children;
+    for (let i = 0; i < childrens.length; i++) {
+      childrens[i].classList.remove("selected");
+    }
+
+    card.classList.add("selected");
+    showDevicePage(deviceData);
+  };
+
+  // Add to table
+  const table = document.getElementById("devicesContainer");
+  table.appendChild(card);
+}
+
+function getDeviceIcon(type) {
+  const icon = document.createElement("div");
+  icon.classList.add("material-symbols-outlined");
+  icon.classList.add("icon");
+
+  switch(type) {
+    case deviceType.light:
+      icon.innerHTML = "lightbulb";
+      break;
+    case deviceType.dimmer:
+      icon.innerHTML = "switch";
+      break;
+    default:
+      icon.innerHTML = "sensors"
+      break;
+  }
+
+  return icon;
 }
 
 function showDevicePage(deviceData) {
@@ -284,3 +372,4 @@ function setDevicePageStatus(id, value) {
       status.classList.remove("available");
   }
 }
+
