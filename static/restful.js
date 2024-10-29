@@ -10,6 +10,10 @@ const deviceStatus = {
   unavailable: "Indisponible",
 };
 
+const modals = ["addDeviceModal", "controlDeviceModal"];
+
+const controlPages = ["lightControl", "dimmerControl", "sensorControl"];
+
 let availableDevices = [
   {
     id: "aaaaa",
@@ -30,7 +34,7 @@ let availableDevices = [
   {
     id: "dddd",
     type: deviceType.dimmer,
-    status: deviceStatus.on,
+    status: deviceStatus.off,
     name: "Dimmer 2",
 
     intensity: "75",
@@ -38,39 +42,293 @@ let availableDevices = [
   {
     id: "ccccc",
     type: deviceType.sensor,
-    status: deviceStatus.off,
+    status: deviceStatus.on,
     name: "Sensor 1",
     temperature: "75",
     humidity: "40",
     luminosity: "100",
-    mouvement: "yes",
+    mouvement: "Détecté",
   },
 ];
 
-const modals = ["addDeviceModal", "lightModal", "dimmerModal", "sensorModal"];
 
-function initSetup() {
-  // Load devices types
-  const select = document.getElementById("deviceTypeSelection");
+// ---------- States ----------
+var selectedDeviceData = null;
+var isEditDevice = false;
 
-  for (var d in deviceType) {
-    const opt = document.createElement("option");
-    opt.value = deviceType[d];
-    opt.innerHTML = deviceType[d];
-    select.appendChild(opt);
+
+
+// ---------- Ajout d'appareil ----------
+function searchForDevice() {
+  const form = document.getElementById("addDeviceForm");
+  const formData = new FormData(form);
+  let data = {};
+  for (let item of formData) {
+    data[item[0]] = item[1];
   }
+  form.reset();
+  openModal("addDeviceModal");
 
-  showAvailableDevices();
+  document.getElementById("formModalId").value = data["id"];
 
-  
-
-  // setup range
-  setupRangeValue("lightIntensity");
-  setupRangeValue("lightTemperature");
-  setupRangeValue("dimmerIntensity");
+  // fetch("/add-device", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(data),
+  // })
+  //   .then((res) => res.json())
+  //   .then((result) => {
+  //     console.log(result);
+  //     form.reset();
+  //     const modal = document.getElementById("addDeviceModal");
+  //     modal.style.display = "flex";
+  //     document.getElementById("formModalId").value = data["id"];
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     alert("Error adding device");
+  //   });
 }
 
-function showAvailableDevices() {
+function scanForDevices() {
+
+}
+
+function createDevice() {
+  const modal = document.getElementById("addDeviceModal");
+  const form = modal.getElementsByTagName("form")[0];
+
+  const formData = new FormData(form);
+  let data = {};
+  for (let item of formData) {
+    data[item[0]] = item[1];
+  }
+  data["id"] = document.getElementById("formModalId").value;
+  data["status"] = deviceStatus.on;
+  
+
+
+  addDevice(data);
+  loadDeviceList();
+
+  form.reset();
+  closeModal("addDeviceModal");
+
+  // fetch("/create-device", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(data),
+  // })
+  //   .then((res) => res.json())
+  //   .then((result) => {
+  //     console.log(result);
+  //     alert("Device created successfully");
+  //     form.reset();
+  //     addDeviceInTable(data);
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     alert("Error adding device");
+  //   });
+}
+
+
+// ---------- Modal ----------
+function openModal(modalId) {
+  // Voir si c'est un modal
+  if(!modals.includes(modalId)) {
+    console.error("Not a known modal : " + modalId);
+    return;
+  }
+
+  // 
+  modals.forEach((id) => {
+    const modal = document.getElementById(id);
+    if(!modal) {
+      console.error("Missing : " + id);
+      return;
+    }
+
+    if(id === modalId) {
+      modal.classList.add("open");
+    } else {
+      modal.classList.remove("open");
+    }
+  });
+}
+
+function closeModal(modalId) {
+  if(!modals.includes(modalId)) {
+    return;
+  }
+
+  const modal = document.getElementById(modalId);
+
+  if(modal && modal.classList.contains("modal")) {
+    modal.classList.remove("open");
+  }
+
+  selectedDeviceData = null;
+}
+
+
+// ---------- Device management ----------
+function addDevice(deviceData) {
+  availableDevices.push(deviceData);
+}
+
+function toggleEditDevice() {
+  console.log(selectedDeviceData);
+
+  // Switch mode
+  isEditDevice = !isEditDevice;
+
+  const form = document.getElementById("controlPageForm");
+  const nameField = document.getElementById("deviceNameField");
+
+  if(isEditDevice) {
+    form.classList.remove("readonly");
+    nameField.readOnly = false;
+  } else {
+    nameField.value = selectedDeviceData["name"];
+    form.classList.add("readonly");
+    nameField.readOnly = true;
+  }
+}
+
+function saveDevice() {
+  // Edit le device data
+
+  const form = document.getElementById("controlPageForm");
+
+  const formData = new FormData(form);
+  console.log(formData);
+
+
+  let data = {};
+  for (let item of formData) {
+    data[item[0]] = item[1];
+  }
+  console.log(data);
+
+  for (let i = 0; i < availableDevices.length; i++) {
+    if(availableDevices[i].id === selectedDeviceData["id"]) {
+      availableDevices[i].name = data["deviceNameField"];
+    }
+  }
+
+  loadDeviceList();
+  toggleEditDevice();
+}
+
+function deleteDevice() {
+  let index = -1;
+
+  for (let i = 0; i < availableDevices.length; i++) {
+    if(availableDevices[i].id === selectedDeviceData["id"]) {
+      index = i;
+    }
+  }
+
+  if (index > -1) {
+    availableDevices.splice(index, 1);
+  }
+
+  loadDeviceList();
+  closeModal("controlDeviceModal");
+}
+
+function switchDeviceState(input) {
+  console.log(input.checked);
+
+  // Envoyer au backend 
+
+  // Attendre le retour pour savoir que c'est changer
+
+  for (let i = 0; i < availableDevices.length; i++) {
+    if(availableDevices[i].id === selectedDeviceData["id"]) {
+      if(input.checked) {
+        availableDevices[i].status = deviceStatus.on;
+      } else {
+        availableDevices[i].status = deviceStatus.off;
+      }
+
+      selectedDeviceData = availableDevices[i];
+    }
+  }
+
+  loadDeviceList();
+  showDeviceControl();
+}
+
+function setDeviceParam(key, value) {
+
+  // Check if key exist
+  if(!selectedDeviceData.hasOwnProperty(key)) {
+    console.error("(" + key + ") not found in : " + Object.keys(selectedDeviceData));
+    return;
+  }
+
+  // Check if value is good
+  switch(key) {
+    case "status":
+      if (value === true || value === false) {
+        if(value === true) {
+          selectedDeviceData[key] = deviceStatus.on;
+        } else {
+          selectedDeviceData[key] = deviceStatus.off;
+        }
+      } else {
+        console.error("wrong value format for " + key);
+        return;
+      }
+      break;
+
+    case "temperature":
+      if (value >= 2700 && value <= 6500) {
+        selectedDeviceData[key] = value;
+
+      } else {
+        console.error("wrong value format for " + key);
+        return;
+      }
+      break;
+
+    case "intensity":
+      if (value >= 0 && value <= 100) {
+        selectedDeviceData[key] = value;
+      } else {
+        console.error("wrong value format for " + key);
+        return;
+      }
+      break;
+
+    default:
+      console.error(key + " can not be modified");
+      return;
+  }
+
+
+  // Envoyer au backend 
+
+  // Attendre le retour pour savoir que c'est changer
+
+  for (let i = 0; i < availableDevices.length; i++) {
+    if(availableDevices[i].id === selectedDeviceData["id"]) {
+      availableDevices[i] = selectedDeviceData;
+    }
+  }
+
+  loadDeviceList();
+  showDeviceControl();
+}
+
+// ---------- Device list ----------
+function loadDeviceList() {
   // Add to table
   const table = document.getElementById("devicesContainer");
 
@@ -81,12 +339,12 @@ function showAvailableDevices() {
 
   // Load devices in device list
   availableDevices.forEach((i) => {
-    const card = createAvailableDeviceCard(i);
+    const card = createDeviceCard(i);
     table.appendChild(card);
   });
 }
 
-function createAvailableDeviceCard(deviceData) {
+function createDeviceCard(deviceData) {
   const {id, name, type, status} = deviceData;
 
   // Create the card
@@ -135,173 +393,80 @@ function createAvailableDeviceCard(deviceData) {
   card.appendChild(dataContainer);
   
   card.onclick = () => {
-    showDevicePage(deviceData);
+    selectedDeviceData = deviceData;
+    showDeviceControl();
   };
 
   return card;
 }
 
-function openModal(modalId) {
-  // Voir si c'est un modal
-  if(!modals.includes(modalId)) {
-    return;
+function showDeviceControl() {
+  const {id, name, type, status} = selectedDeviceData;
+
+  // Open good modal
+  openModal("controlDeviceModal");
+  
+  // Load info in modal
+  const icon = document.getElementById("controlPageIcon");
+  const title = document.getElementById("controlPageTitle");
+  const statusIcon = document.getElementById("controlPageStatus");
+
+  switch(type) {
+    case deviceType.light:
+      icon.innerHTML = "lightbulb";
+      title.innerHTML = "Ampoule";
+      break;
+
+    case deviceType.dimmer:
+      icon.innerHTML = "switch";
+      title.innerHTML = "Gradateur";
+      break;
+
+    case deviceType.sensor:
+      icon.innerHTML = "sensors";
+      title.innerHTML = "Capteur d'environnement";
+      break;
   }
 
-  // 
-  modals.forEach((id) => {
-    const modal = document.getElementById(id);
-    if(!modal) {
+  if(status === deviceStatus.on) {
+    statusIcon.classList.add("on");
+    statusIcon.classList.remove("off");
+  } else if (status === deviceStatus.off) {
+    statusIcon.classList.add("off");
+    statusIcon.classList.remove("on");
+  } else {
+    statusIcon.classList.remove("on");
+    statusIcon.classList.remove("off");
+  }
+
+  // Show device info for type
+  const nameField = document.getElementById("deviceNameField");
+  nameField.value = name;
+
+
+  controlPages.forEach((id) => {
+    const control = document.getElementById(id);
+    if(!control) {
+      console.error("Missing : " + control);
       return;
     }
 
-    if(id === modalId) {
-      modal.classList.add("open");
+    if(id === "lightControl" && type === deviceType.light) {
+      setLightData();
+      control.classList.remove("hidden");
+    } else if(id === "dimmerControl" && type === deviceType.dimmer) {
+      setDimmerData();
+      control.classList.remove("hidden");
+    } else if(id === "sensorControl" && type === deviceType.sensor) {
+      setSensorData();
+      control.classList.remove("hidden");
     } else {
-      modal.classList.remove("open");
+      control.classList.add("hidden");
     }
   });
 }
 
-function closeModal(modalId) {
-  if(!modals.includes(modalId)) {
-    return;
-  }
-
-  const modal = document.getElementById(modalId);
-
-  if(modal && modal.classList.contains("modal")) {
-    modal.classList.remove("open");
-  }
-}
-
-function addDevice() {
-  const form = document.getElementById("addDeviceForm");
-  const formData = new FormData(form);
-  let data = {};
-  for (let item of formData) {
-    data[item[0]] = item[1];
-  }
-  form.reset();
-  openModal("addDeviceModal");
-
-  document.getElementById("formModalId").value = data["id"];
-
-  // fetch("/add-device", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(data),
-  // })
-  //   .then((res) => res.json())
-  //   .then((result) => {
-  //     console.log(result);
-  //     form.reset();
-  //     const modal = document.getElementById("addDeviceModal");
-  //     modal.style.display = "flex";
-  //     document.getElementById("formModalId").value = data["id"];
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     alert("Error adding device");
-  //   });
-}
-
-function createDevice() {
-  const modal = document.getElementById("addDeviceModal");
-  const form = modal.getElementsByTagName("form")[0];
-
-  const formData = new FormData(form);
-  let data = {};
-  for (let item of formData) {
-    data[item[0]] = item[1];
-  }
-  data["id"] = document.getElementById("formModalId").value;
-  data["status"] = deviceStatus.on;
-  
-  
-
-  addAvailableDevice(data);
-  showAvailableDevices();
-
-  form.reset();
-  closeModal("addDeviceModal");
-
-
-
-
-  // fetch("/create-device", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(data),
-  // })
-  //   .then((res) => res.json())
-  //   .then((result) => {
-  //     console.log(result);
-  //     alert("Device created successfully");
-  //     form.reset();
-  //     addDeviceInTable(data);
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     alert("Error adding device");
-  //   });
-}
-
-function addDeviceInTable(deviceData) {
-  const table = document.getElementById("devicesListBody");
-  const newRow = table.insertRow();
-  const id = newRow.insertCell();
-  id.innerHTML = deviceData["id"];
-  const name = newRow.insertCell();
-  name.innerHTML = deviceData["name"];
-  const type = newRow.insertCell();
-  type.innerHTML = deviceData["type"];
-  const status = newRow.insertCell();
-  status.innerHTML = deviceData["status"];
-
-  newRow.onclick = () => {
-    const children = table.children;
-    for (let i = 0; i < children.length; i++) {
-      children[i].style.backgroundColor = "white";
-    }
-    newRow.style.backgroundColor = "lightblue";
-    showDevicePage(deviceData);
-  };
-
-  document.getElementById("devicesList").style.display = "block";
-}
-
-function addAvailableDevice(deviceData) {
-  availableDevices.push(deviceData);
-}
-
-function deleteAvailableDevice(deviceId) {
-  let index = -1;
-
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === deviceId) {
-      index = i;
-    }
-  }
-
-  if (index > -1) {
-    availableDevices.splice(index, 1);
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
+// ---------- TOOLS ----------
 function getDeviceIcon(type) {
   const icon = document.createElement("div");
   icon.classList.add("material-symbols-outlined");
@@ -322,129 +487,39 @@ function getDeviceIcon(type) {
   return icon;
 }
 
+function setLightData() {
+  const {id, status, intensity, temperature} = selectedDeviceData;
 
 
-function showDevicePage(deviceData) {
-  switch(deviceData["type"]) {
-    case deviceType.light:
-      openModal("lightModal")
-      setLightData(deviceData);
-      break;
-    case deviceType.dimmer:
-      openModal("dimmerModal")
-      setDimmerData(deviceData);
-      break;
-    case deviceType.sensor:
-      openModal("sensorModal")
-      setSensorData(deviceData);
-      break;
-  }
+  const form = document.getElementById("lightControl");
+  new FormData(form).set("id", id);
 
-  /*
-  const lightModal = document.getElementById("lightModal");
-  const dimmerModal = document.getElementById("dimmerModal");
-  const sensorModal = document.getElementById("sensorModal");
-
-  if (deviceData["type"] === deviceType.light) {
-    lightModal.classList.add("open");
-    dimmerModal.classList.remove("open");
-    sensorModal.classList.remove("open");
-    setLightData(deviceData);
-  } else if (deviceData["type"] === deviceType.dimmer) {
-    lightModal.classList.remove("open");
-    dimmerModal.classList.add("open");
-    sensorModal.classList.remove("open");
-    setDimmerData(deviceData);
-  } else if (deviceData["type"] === deviceType.sensor) {
-    lightModal.classList.remove("open");
-    dimmerModal.classList.remove("open");
-    sensorModal.classList.add("open");
-    setSensorData(deviceData);
-  }
-    */
-}
-
-//Remove devices table if no devices are present
-document.addEventListener("DOMContentLoaded", () => {
-  /*
-  fetch("/get-devices", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  .then((res) => res.json())
-  .then((result) => {
-    console.log(result);
-    addDeviceInTable(result);
-    addAvailableDevice(result);
-  })
-  .catch((err) => {
-    console.log(err);
-    alert("Error adding device");
-  });
-  */
-  const tds = document.getElementById("devicesList").getElementsByTagName("td");
-  if (tds.length === 0) {
-    document.getElementById("devicesList").style.display = "none";
-  }
-});
-
-function setLightData(data) {
-  const name = document.getElementById("lightName");
-  name.innerHTML = data.name;
-
-  setDevicePageStatus("lightStatus", data.status);
-  const form = document.getElementById("lightForm");
-  new FormData(form).set("id", data.id);
   const temp = document.getElementById("lightPower");
-  temp.checked = data.status === deviceStatus.on;
+  temp.checked = status === deviceStatus.on;
 
-  setRangeValue("lightIntensity", data.intensity);
-  setRangeValue("lightTemperature", data.temperature);
-
-  document.getElementById("deleteLight").onclick = () => {
-    deleteAvailableDevice(data["id"]);
-    showAvailableDevices();
-    closeModal("lightModal");
-  };
+  setRangeValue("lightIntensity", intensity);
+  setRangeValue("lightTemperature", temperature);
 }
 
-function setDimmerData(data) {
-  const name = document.getElementById("dimmerName");
-  name.innerHTML = data.name;
+function setDimmerData() {
+  const {id, status, intensity} = selectedDeviceData;
 
-  setDevicePageStatus("dimmerStatus", data.status);
+  const form = document.getElementById("dimmerControl");
+  new FormData(form).set("id", id);
 
-  setRangeValue("dimmerIntensity", data.intensity);
+  const temp = document.getElementById("dimmerPower");
+  temp.checked = status === deviceStatus.on;
 
-  document.getElementById("deleteDimmer").onclick = () => {
-    deleteAvailableDevice(data["id"]);
-    showAvailableDevices();
-    closeModal("dimmerModal");
-  };
+  setRangeValue("dimmerIntensity", intensity);
 }
 
-function setSensorData(data) {
-  const name = document.getElementById("sensorName");
-  name.innerHTML = data.name;
+function setSensorData() {
+  const {temperature, humidity, luminosity, mouvement} = selectedDeviceData;
 
-  setDevicePageStatus("sensorStatus", data.status);
-
-  const temperature = document.getElementById("sensorTemperature");
-  temperature.innerHTML = "3000";
-  const humidity = document.getElementById("sensorHumidity");
-  humidity.innerHTML = "50";
-  const Luminosity = document.getElementById("sensorLuminosity");
-  Luminosity.innerHTML = "50";
-  const mouvement = document.getElementById("sensorMouvement");
-  mouvement.innerHTML = "Détecté";
-
-  document.getElementById("deleteSensor").onclick = () => {
-    deleteAvailableDevice(data["id"]);
-    showAvailableDevices();
-    closeModal("sensorModal");
-  };
+  document.getElementById("sensorTemperature").innerHTML = temperature;
+  document.getElementById("sensorHumidity").innerHTML = humidity;
+  document.getElementById("sensorLuminosity").innerHTML = luminosity;
+  document.getElementById("sensorMouvement").innerHTML = mouvement;
 }
 
 function setupRangeValue(id) {
@@ -477,18 +552,139 @@ function setRangeValue(id, value) {
   range.dispatchEvent(new Event("input"));
 }
 
-function setDevicePageStatus(id, value) {
-  const status = document.getElementById(id);
-  switch (value) {
-    case deviceStatus.on:
-      status.classList.add("on");
-      break;
-    case deviceStatus.off:
-      status.classList.add("off");
-      break;
-    default:
-      status.classList.remove("available");
+
+
+//Remove devices table if no devices are present
+document.addEventListener("DOMContentLoaded", () => {
+  /*
+  fetch("/get-devices", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+    addDeviceInTable(result);
+    addDevice(result);
+  })
+  .catch((err) => {
+    console.log(err);
+    alert("Error adding device");
+  });
+  */
+  const tds = document.getElementById("devicesList").getElementsByTagName("td");
+  if (tds.length === 0) {
+    document.getElementById("devicesList").style.display = "none";
   }
+});
+
+
+
+
+// ---------- INIT ----------
+function initSetup() {
+  // Load devices types
+  const select = document.getElementById("deviceTypeSelection");
+
+  for (var d in deviceType) {
+    const opt = document.createElement("option");
+    opt.value = deviceType[d];
+    opt.innerHTML = deviceType[d];
+    select.appendChild(opt);
+  }
+
+  loadDeviceList();
+
+  
+
+  // setup range
+  setupRangeValue("lightIntensity");
+  setupRangeValue("lightTemperature");
+  setupRangeValue("dimmerIntensity");
 }
 
 initSetup();
+
+
+// ---------- OLD ----------
+function addDeviceInTable(deviceData) {
+  const table = document.getElementById("devicesListBody");
+  const newRow = table.insertRow();
+  const id = newRow.insertCell();
+  id.innerHTML = deviceData["id"];
+  const name = newRow.insertCell();
+  name.innerHTML = deviceData["name"];
+  const type = newRow.insertCell();
+  type.innerHTML = deviceData["type"];
+  const status = newRow.insertCell();
+  status.innerHTML = deviceData["status"];
+
+  newRow.onclick = () => {
+    const children = table.children;
+    for (let i = 0; i < children.length; i++) {
+      children[i].style.backgroundColor = "white";
+    }
+    newRow.style.backgroundColor = "lightblue";
+    showDevicePage(deviceData);
+  };
+
+  document.getElementById("devicesList").style.display = "block";
+}
+function showDevicePage(deviceData) {
+
+  switch(deviceData["type"]) {
+    case deviceType.light:
+      setLightData(deviceData);
+      break;
+    case deviceType.dimmer:
+      setDimmerData(deviceData);
+      break;
+    case deviceType.sensor:
+      setSensorData(deviceData);
+      break;
+  }
+
+  openModal("controlDeviceModal");
+
+  /*
+  switch(deviceData["type"]) {
+    case deviceType.light:
+      openModal("lightModal")
+      setLightData(deviceData);
+      break;
+    case deviceType.dimmer:
+      openModal("dimmerModal")
+      setDimmerData(deviceData);
+      break;
+    case deviceType.sensor:
+      openModal("sensorModal")
+      setSensorData(deviceData);
+      break;
+  }
+      */
+
+  /*
+  const lightModal = document.getElementById("lightModal");
+  const dimmerModal = document.getElementById("dimmerModal");
+  const sensorModal = document.getElementById("sensorModal");
+
+  if (deviceData["type"] === deviceType.light) {
+    lightModal.classList.add("open");
+    dimmerModal.classList.remove("open");
+    sensorModal.classList.remove("open");
+    setLightData(deviceData);
+  } else if (deviceData["type"] === deviceType.dimmer) {
+    lightModal.classList.remove("open");
+    dimmerModal.classList.add("open");
+    sensorModal.classList.remove("open");
+    setDimmerData(deviceData);
+  } else if (deviceData["type"] === deviceType.sensor) {
+    lightModal.classList.remove("open");
+    dimmerModal.classList.remove("open");
+    sensorModal.classList.add("open");
+    setSensorData(deviceData);
+  }
+    */
+}

@@ -17,19 +17,6 @@ section {
   flex-direction: column;
 }
 
-
-
-.section-title {
-
-}
-
-
-
-
-
-
-
-
 .row {
   width: 100% !important;
   margin-bottom: 20px !important;
@@ -142,15 +129,6 @@ section {
   }
 }
 
-.color-picker {
-  width: 30px;
-  height: 30px;
-  background: red;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .controlPage {
   border-radius: 10px;
   padding: 20px;
@@ -158,12 +136,6 @@ section {
   flex-direction: column;
   align-items: stretch;
   gap: 10px;
-
-
-  > *:not(:last-child) {
-    border-bottom: 1px black solid;
-    padding-bottom: 5px;
-  }
 
   h3 {
     margin: 0;
@@ -173,12 +145,58 @@ section {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+
+    border-bottom: 1px black solid;
+    padding-bottom: 5px;
   
     .title {
       display: flex;
       gap: 10px;
       align-items: center;
     }
+
+    .controlPageHeaderButton {
+      background-color: transparent;
+      border: none;
+    }
+  }
+
+  .controlPageForm {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    border-bottom: 1px black solid;
+    padding-bottom: 5px;
+
+
+    &.readonly {
+      .textField {
+        border: none;
+        outline: none;
+        cursor: default;
+      }
+
+      .saveButton {
+        display: none;
+      }
+    }
+
+    >label {
+      margin: 0;
+    }
+
+    .textField {
+      flex: 1;
+    }
+
+    .saveButton {
+      border: none;
+      background-color: transparent;
+    }
+    
+    
   }
 
   .stats {
@@ -200,51 +218,21 @@ section {
     justify-content: flex-start;
     gap: 25px;
 
+    height: max-content;
+
     > *:not(:first-child) {
       flex: 1;
     }
-  }
-}
 
-
-
-.statusBadge {
-  width: 25px;
-  height: 25px;
-  background-color: gray;
-  border-radius: 100%;
-  &.available {
-    background-color: green;
-  }
-}
-
-.deviceList {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.deviceButton {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 150px;
-  width: 150px;
-  border-radius: 1px solid;
-  border-radius: 10px;
-
-  &.on {
-    background-color: green;
+    .slider-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
   }
 
-  &.off {
-    background-color: red;
-  }
-
-  &.unavailable {
-    background-color: lightgray;
+  .hidden {
+    display: none;
   }
 }
 
@@ -311,26 +299,7 @@ input[type="range"]::-moz-range-thumb {
   width: 10px;
 }
 
-.rangeZone {
-  position: relative;
-  display: flex;
-  height: 51px;
-  width: 100%;
-  justify-content: center;
-  border: #000000 1px solid;
-}
 .rangeValue {
-  z-index: 1;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-  border-radius: 10px;
-  margin-left: 10px;
-  font-size: 40px;
-  font-weight: bolder;
-}
-
-.rangeValue2 {
   z-index: 1;
   /*height: 50px;
   line-height: 50px;*/
@@ -392,14 +361,9 @@ input[type="checkbox"] {
 input:checked + .vertical-slider:before {
   transform: translateY(calc(100% - 80px));
 }
-.flex-center {
-  display: flex;
-  justify-content: flex-start;
-  align-items: start;
-  flex-direction: column;
-}
 
-.testNico {
+
+.deviceList {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -429,23 +393,18 @@ input:checked + .vertical-slider:before {
   &.selected {
     background-color: lightblue;
   }
-}
 
-.deviceCardHeader {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.controlPageHeaderButton {
-  background-color: transparent;
-  border: none;
-}
-
-.deviceCardData {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  .deviceCardHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .deviceCardData {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .icon {
@@ -463,4 +422,3 @@ input:checked + .vertical-slider:before {
     color: gray;
   }
 }
-

@@ -34,9 +34,9 @@
     </div>
 
     <section id="addDevicesSection" class="sub-section">
-      <h3 class="section-title">Ajoutez un appareil</h3>
+      <h3>Ajoutez un appareil</h3>
 
-      <form action="javascript:addDevice()" placeholder="Ajouter un appareil" id="addDeviceForm">
+      <form action="javascript:searchForDevice()" placeholder="Ajouter un appareil" id="addDeviceForm">
 
         <div class="row">
           <div class="col-md-6">
@@ -50,16 +50,15 @@
           </div>
         </div>
         
-
         <div class="btn-section">
           <input name="addButton" type="submit" class="btn btn-primary" value="Ajouter un appareil" />
-          <input name="scanButton" type="button" class="btn btn-primary" value="Trouver un appareil" />
+          <input name="scanButton" type="button" class="btn btn-primary" value="Trouver un appareil" onclick="scanForDevices()"/>
         </div>
       </form>
     </section>
 
     <section id="devicesList" class="sub-section" style="display: none;">
-      <h3 class="section-title">Liste des appareils sur le réseaux</h3>
+      <h3>Liste des appareils sur le réseaux</h3>
 
       <div class="row">
         
@@ -79,8 +78,8 @@
     </section>
 
     <section id="devicesList2" class="sub-section">
-      <h3 class="section-title">Liste des appareils sur le réseaux</h3>
-      <div id="devicesContainer" class="testNico">
+      <h3>Liste des appareils sur le réseaux</h3>
+      <div id="devicesContainer" class="deviceList">
 
       </div>
     </section>
@@ -172,157 +171,86 @@
       </div>
     </div>
 
-    <div id="lightModal" class="modal" onclick="closeModal(this.id)">
+    <div id="controlDeviceModal" class="modal" onclick="closeModal(this.id)">
       <div class="modalContainer" onclick="event.stopPropagation(); event.cancelBubble = true;">
         <div class="modalHeader single">
-          <button class="material-symbols-outlined icon" onclick="closeModal('lightModal')">close</button>
+          <button class="material-symbols-outlined icon" onclick="closeModal('controlDeviceModal')">close</button>
         </div>
 
-        <div id="lightControlPage" class="controlPage">
-
+        <div id="controlPage" class="controlPage">
           <div class="controlPageHeader">
             <div class="title">
-              <div class="material-symbols-outlined icon">lightbulb</div>
-              <h3>Ampoule</h3>
-              <div id="lightStatus" class="material-symbols-outlined icon">power_settings_circle</div>
+              <div id="controlPageIcon" class="material-symbols-outlined icon">lightbulb</div>
+              <h3 id="controlPageTitle">Ampoule</h3>
+              <div id="controlPageStatus" class="material-symbols-outlined icon">power_settings_circle</div>
             </div>
   
             <div>
-              <button id="editLight" class="material-symbols-outlined icon controlPageHeaderButton">edit</button>
-              <button id="deleteLight" class="material-symbols-outlined icon controlPageHeaderButton">Delete</button>
+              <button class="material-symbols-outlined icon controlPageHeaderButton" onclick="toggleEditDevice()">edit</button>
+              <button class="material-symbols-outlined icon controlPageHeaderButton" onclick="deleteDevice()">delete</button>
             </div>
           </div>
-  
-          <div class="stats">
-            <p>Name : <span id="lightName"></span></p>
-          </div>
-  
-          <form action="" id="lightForm">
-            <div class="controls">
-              <div class="flex-center">
-                <div class="vertical-switch-section">
-                  <p class="top">ON</p>
-                  <label class="vertical-switch">
-                    <input type="checkbox" id="lightPower">
-                    <span class="vertical-slider"></span>
-                  </label>
-                  <p class="bottom">OFF</p>
-                </div>
-              </div>
-  
+
+          <form id="controlPageForm" class="controlPageForm readonly" action="javascript:saveDevice()">
+            <label for="deviceNameField">Nom : </label>
+            <input id="deviceNameField" class="textField" type="text" name="deviceNameField" readonly/>
+            <input type="submit" value="save" class="material-symbols-outlined icon saveButton"/>
+          </form>
+
+          <form action="" id="lightControl" class="controls hidden">
+            <div class="vertical-switch-section">
+              <p class="top">ON</p>
+              <label class="vertical-switch">
+                <input type="checkbox" id="lightPower" onchange="setDeviceParam('status', this.checked)">
+                <span class="vertical-slider"></span>
+              </label>
+              <p class="bottom">OFF</p>
+            </div>
+
+            <div class="slider-section">
               <div>
-                <div>
-                  <label for="intensity">Intensité : <span class="rangeValue2" id="lightIntensityValue"></span></label>
-                  <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
-                    class="intensityGradient" />
-                </div>
-                <br>
-  
-                <div>
-                  <label for="temp">Température : <span class="rangeValue2" id="lightTemperatureValue"></span></label>
-                  <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
-                    class="tempSlider tempGradient" step="100" />
-                </div>
+                <label for="intensity">Intensité : <span class="rangeValue" id="lightIntensityValue"></span></label>
+                <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
+                  class="intensityGradient" onchange="setDeviceParam('intensity', this.value)"/>
+              </div>
+
+              <div>
+                <label for="temp">Température : <span class="rangeValue" id="lightTemperatureValue"></span></label>
+                <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
+                  class="tempSlider tempGradient" step="100" onchange="setDeviceParam('temperature', this.value)"/>
               </div>
             </div>
           </form>
-  
-        </div>
-      </div>
-    </div>
 
-    <div id="dimmerModal" class="modal" onclick="closeModal(this.id)">
-      <div class="modalContainer" onclick="event.stopPropagation(); event.cancelBubble = true;">
-        <div class="modalHeader single">
-          <button class="material-symbols-outlined icon" onclick="closeModal('dimmerModal')">close</button>
-        </div>
+          <form action="" id="dimmerControl" class="controls hidden">
+            <div class="vertical-switch-section">
+              <p class="top">ON</p>
+              <label class="vertical-switch">
+                <input type="checkbox" id="dimmerPower" onchange="setDeviceParam('status', this.checked)">
+                <span class="vertical-slider"></span>
+              </label>
+              <p class="bottom">OFF</p>
+            </div>
 
-        <div id="dimmerControlPage" class="controlPage">
-          <div class="controlPageHeader">
-            <div class="title">
-              <div class="material-symbols-outlined icon">switch</div>
-              <h3>Gradateur</h3>
-              <div id="dimmerStatus" class="material-symbols-outlined icon">power_settings_circle</div>
-            </div>
-  
-            <div>
-              <button id="editDimmer" class="material-symbols-outlined icon controlPageHeaderButton">edit</button>
-              <button id="deleteDimmer" class="material-symbols-outlined icon controlPageHeaderButton">Delete</button>
-            </div>
-          </div>
-  
-          <div class="stats">
-            <p>Name : <span id="dimmerName"></span></p>
-          </div>
-  
-  
-          <form action="" id="dimmerForm">
-            <div class="controls">
+            <div class="slider-section">
               <div>
-                <label class="switch">
-                  <input type="checkbox" id="lightPower">
-                  <span class="slider"></span>
-                </label>
-  
-                <div class="vertical-switch-section">
-                  <p class="top">ON</p>
-                  <label class="vertical-switch">
-                    <input type="checkbox">
-                    <span class="vertical-slider"></span>
-                  </label>
-                  <p class="bottom">OFF</p>
-                </div>
-              </div>
-  
-              <div>
-                <label for="intensity">Intensité : <span class="rangeValue2" id="dimmerIntensityValue"></span></label>
+                <label for="intensity">Intensité : <span class="rangeValue" id="dimmerIntensityValue"></span></label>
                 <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5"
-                  class="intensityGradient" />
+                  class="intensityGradient" onchange="setDeviceParam('intensity', this.value)"/>
               </div>
             </div>
           </form>
-        </div>
 
-
-      </div>
-    </div>
-
-    <div id="sensorModal" class="modal" onclick="closeModal(this.id)">
-      <div class="modalContainer" onclick="event.stopPropagation(); event.cancelBubble = true;">
-        <div class="modalHeader single">
-          <button class="material-symbols-outlined icon" onclick="closeModal('sensorModal')">close</button>
-        </div>
-
-        <div id="sensorControlPage" class="controlPage">
-          <div class="controlPageHeader">
-            <div class="title">
-              <div class="material-symbols-outlined icon">sensors</div>
-              <h3>Capteur d'environnement</h3>
-              <div id="sensorStatus" class="material-symbols-outlined icon">power_settings_circle</div>
-            </div>
-
-            <div>
-              <button id="editSensor" class="material-symbols-outlined icon controlPageHeaderButton">edit</button>
-              <button id="deleteSensor" class="material-symbols-outlined icon controlPageHeaderButton">Delete</button>
-            </div>
-            
-          </div>
-  
-          <div class="stats">
-            <p>Name : <span id="sensorName"></span></p>
-          </div>
-  
-          <div class="stats">
+          <div id="sensorControl" class="stats hidden">
             <p>Temperature : <span id="sensorTemperature"></span></p>
             <p>Humidity : <span id="sensorHumidity"></span></p>
             <p>Luminosity : <span id="sensorLuminosity"></span></p>
             <p>Mouvement : <span id="sensorMouvement"></span></p>
           </div>
+
         </div>
       </div>
     </div>
-
-
     <!-- MODALS -->
   </main>
 
