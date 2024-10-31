@@ -52,6 +52,51 @@ let availableDevices = [
 ];
 
 
+const deviceScanMock = [
+  {
+    id: "light_aaaa",
+    type: deviceType.light,
+  },
+  {
+    id: "light_bbbb",
+    type: deviceType.light,
+  },
+  {
+    id: "light_cccc",
+    type: deviceType.light,
+  },
+  {
+    id: "dimmer_aaaa",
+    type: deviceType.dimmer,
+  },
+  {
+    id: "dimmer_bbbb",
+    type: deviceType.dimmer,
+  },
+  {
+    id: "dimmer_cccc",
+    type: deviceType.dimmer,
+  },
+  {
+    id: "sensor_aaaa",
+    type: deviceType.sensor,
+  },
+  {
+    id: "sensor_bbbb",
+    type: deviceType.sensor,
+  },
+  {
+    id: "sensor_cccc",
+    type: deviceType.sensor,
+  },
+  
+]
+
+
+
+
+
+
 // ---------- States ----------
 var selectedDeviceData = null;
 var isEditDevice = false;
@@ -93,7 +138,29 @@ function searchForDevice() {
 }
 
 function scanForDevices() {
+  // Fetch
 
+  // Fill table
+  const table = document.getElementById("scanDevicesListBody");
+  table.innerHTML = "";
+
+  deviceScanMock.forEach((data) => {
+    const newRow = table.insertRow();
+    const id = newRow.insertCell();
+    id.innerHTML = data["id"];
+    const type = newRow.insertCell();
+    type.innerHTML = data["type"];
+
+    newRow.onclick = () => {
+      const children = table.children;
+      for (let i = 0; i < children.length; i++) {
+        children[i].style.backgroundColor = "white";
+      }
+      newRow.style.backgroundColor = "lightblue";
+
+      //showDevicePage(deviceData);
+    };
+  })
 }
 
 function createDevice() {
