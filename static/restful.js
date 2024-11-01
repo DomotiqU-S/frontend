@@ -93,6 +93,14 @@ const deviceScanMock = [
 ]
 
 
+let networkDevices = [];
+
+
+
+
+
+
+
 
 
 
@@ -105,6 +113,7 @@ var isEditDevice = false;
 
 // ---------- Ajout d'appareil ----------
 function searchForDevice() {
+  /*
   const form = document.getElementById("addDeviceForm");
   const formData = new FormData(form);
   let data = {};
@@ -115,26 +124,43 @@ function searchForDevice() {
   openModal("addDeviceModal");
 
   document.getElementById("formModalId").value = data["id"];
+  */
 
-  // fetch("/add-device", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(data),
-  // })
-  //   .then((res) => res.json())
-  //   .then((result) => {
-  //     console.log(result);
-  //     form.reset();
-  //     const modal = document.getElementById("addDeviceModal");
-  //     modal.style.display = "flex";
-  //     document.getElementById("formModalId").value = data["id"];
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     alert("Error adding device");
-  //   });
+  /*
+  fetch("/add-device", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+    form.reset();
+    const modal = document.getElementById("addDeviceModal");
+    modal.style.display = "flex";
+    document.getElementById("formModalId").value = data["id"];
+  })
+  .catch((err) => {
+    console.log(err);
+    alert("Error adding device");
+  });
+  */
+
+  fetch("/test", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 }
 
 function scanForDevices() {
@@ -178,7 +204,7 @@ function createDevice() {
 
 
   addDevice(data);
-  loadDeviceList();
+  loadDeviceList(availableDevices);
 
   form.reset();
   closeModal("addDeviceModal");
@@ -280,15 +306,22 @@ function saveDevice() {
   for (let item of formData) {
     data[item[0]] = item[1];
   }
-  console.log(data);
 
+  // Backend request
+  fetchPostModifyDeviceInfo({
+    id: selectedDeviceData["id"],
+    key: "name",
+    value: data["deviceNameField"]
+  })
+
+  // Temporary mock result
   for (let i = 0; i < availableDevices.length; i++) {
     if(availableDevices[i].id === selectedDeviceData["id"]) {
       availableDevices[i].name = data["deviceNameField"];
     }
   }
 
-  loadDeviceList();
+  loadDeviceList(availableDevices);
   toggleEditDevice();
 }
 
@@ -305,7 +338,7 @@ function deleteDevice() {
     availableDevices.splice(index, 1);
   }
 
-  loadDeviceList();
+  loadDeviceList(availableDevices);
   closeModal("controlDeviceModal");
 }
 
@@ -328,9 +361,94 @@ function switchDeviceState(input) {
     }
   }
 
-  loadDeviceList();
+  loadDeviceList(availableDevices);
   showDeviceControl();
 }
+
+function setDeviceStatus(value) {
+  if(value !== true && value !== false) {
+    console.error("Wrong value format for status");
+    return;
+  }
+
+  // Envoyer au backend 
+  fetchPostModifyDeviceParam({
+    id: selectedDeviceData["id"],
+    key: "status",
+    value: value ? deviceStatus.on : deviceStatus.off
+  });
+
+  // Mock device info modification
+  for (let i = 0; i < availableDevices.length; i++) {
+    if(availableDevices[i].id === selectedDeviceData["id"]) {
+      availableDevices[i].status = value ? deviceStatus.on : deviceStatus.off;
+      selectedDeviceData = availableDevices[i];
+      break;
+    }
+  }
+  loadDeviceList(availableDevices);
+  showDeviceControl();
+}
+
+function setDeviceTemperature(value) {
+  if(value < 2700 || value > 6500) {
+    console.error("Wrong value format for temperature");
+    return;
+  }
+
+  // Envoyer au backend 
+  fetchPostModifyDeviceParam({
+    id: selectedDeviceData["id"],
+    key: "temperature",
+    value: value
+  });
+
+  // Mock device info modification
+  for (let i = 0; i < availableDevices.length; i++) {
+    if(availableDevices[i].id === selectedDeviceData["id"]) {
+      availableDevices[i].temperature = value;
+      selectedDeviceData = availableDevices[i];
+      break;
+    }
+  }
+  loadDeviceList(availableDevices);
+  showDeviceControl();
+}
+
+function setDeviceIntensity(value) {
+  if(value < 0 || value > 100) {
+    console.error("Wrong value format for intensity");
+    return;
+  }
+
+  // Envoyer au backend 
+  fetchPostModifyDeviceParam({
+    id: selectedDeviceData["id"],
+    key: "intensity",
+    value: value
+  });
+
+  // Mock device info modification
+  for (let i = 0; i < availableDevices.length; i++) {
+    if(availableDevices[i].id === selectedDeviceData["id"]) {
+      availableDevices[i].intensity = value;
+      selectedDeviceData = availableDevices[i];
+      break;
+    }
+  }
+  loadDeviceList(availableDevices);
+  showDeviceControl();
+}
+
+
+
+
+
+
+
+
+
+
 
 function setDeviceParam(key, value) {
 
@@ -381,6 +499,15 @@ function setDeviceParam(key, value) {
 
 
   // Envoyer au backend 
+  fetchPostModifyNetworkDevice({
+    id: selectedDeviceData.id,
+    field: key,
+    value: selectedDeviceData[key]
+  });
+
+
+
+
 
   // Attendre le retour pour savoir que c'est changer
 
@@ -390,12 +517,12 @@ function setDeviceParam(key, value) {
     }
   }
 
-  loadDeviceList();
+  loadDeviceList(availableDevices);
   showDeviceControl();
 }
 
 // ---------- Device list ----------
-function loadDeviceList() {
+function loadDeviceList(devices) {
   // Add to table
   const table = document.getElementById("devicesContainer");
 
@@ -405,7 +532,7 @@ function loadDeviceList() {
   }
 
   // Load devices in device list
-  availableDevices.forEach((i) => {
+  devices.forEach((i) => {
     const card = createDeviceCard(i);
     table.appendChild(card);
   });
@@ -647,7 +774,67 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ---------- FETCH ----------
+function fetchGetNetworkDevices() {
+  // Request : start spinner -> fetch data -> wait for response
+  // Response : 
 
+
+  fetch("/network/devices", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((res) => res.json())
+  .then((response) => {
+    console.log(response);
+    loadDeviceList(response);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}
+
+function fetchPostModifyDeviceInfo(data) {
+  fetch("/modify-device-info", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+    //alert("Device info modified successfully");
+    //fetchGetNetworkDevices();
+  })
+  .catch((err) => {
+    console.log(err);
+    alert("Error modifying device info");
+  });
+}
+
+function fetchPostModifyDeviceParam(data) {
+  fetch("/modify-device-param", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+    //alert("Device param modified successfully");
+    //fetchGetNetworkDevices();
+  })
+  .catch((err) => {
+    console.log(err);
+    alert("Error modifying device param");
+  });
+}
 
 
 // ---------- INIT ----------
@@ -662,7 +849,9 @@ function initSetup() {
     select.appendChild(opt);
   }
 
-  loadDeviceList();
+  loadDeviceList(availableDevices);
+
+  fetchGetNetworkDevices()
 
   
 

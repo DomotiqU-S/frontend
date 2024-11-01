@@ -229,7 +229,7 @@
             <div class="vertical-switch-section">
               <p class="top">ON</p>
               <label class="vertical-switch">
-                <input type="checkbox" id="lightPower" onchange="setDeviceParam('status', this.checked)">
+                <input type="checkbox" id="lightPower" onchange="setDeviceStatus(this.checked)">
                 <span class="vertical-slider"></span>
               </label>
               <p class="bottom">OFF</p>
@@ -239,13 +239,13 @@
               <div>
                 <label for="intensity">Intensité : <span class="rangeValue" id="lightIntensityValue"></span></label>
                 <input type="range" name="intensity" id="lightIntensity" min="0" max="100" value="50" step="5"
-                  class="intensityGradient" onchange="setDeviceParam('intensity', this.value)"/>
+                  class="intensityGradient" onchange="setDeviceIntensity(this.value)"/>
               </div>
 
               <div>
                 <label for="temp">Température : <span class="rangeValue" id="lightTemperatureValue"></span></label>
                 <input type="range" name="temp" id="lightTemperature" min="2700" max="6500"
-                  class="tempSlider tempGradient" step="100" onchange="setDeviceParam('temperature', this.value)"/>
+                  class="tempSlider tempGradient" step="100" onchange="setDeviceTemperature(this.value)"/>
               </div>
             </div>
           </form>
@@ -254,7 +254,7 @@
             <div class="vertical-switch-section">
               <p class="top">ON</p>
               <label class="vertical-switch">
-                <input type="checkbox" id="dimmerPower" onchange="setDeviceParam('status', this.checked)">
+                <input type="checkbox" id="dimmerPower" onchange="setDeviceStatus(this.checked)">
                 <span class="vertical-slider"></span>
               </label>
               <p class="bottom">OFF</p>
@@ -264,7 +264,7 @@
               <div>
                 <label for="intensity">Intensité : <span class="rangeValue" id="dimmerIntensityValue"></span></label>
                 <input type="range" name="intensity" id="dimmerIntensity" min="0" max="100" step="5"
-                  class="intensityGradient" onchange="setDeviceParam('intensity', this.value)"/>
+                  class="intensityGradient" onchange="setDeviceIntensity(this.value)"/>
               </div>
             </div>
           </form>
