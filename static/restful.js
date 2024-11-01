@@ -14,7 +14,7 @@ const modals = ["addDeviceModal", "controlDeviceModal"];
 
 const controlPages = ["lightControl", "dimmerControl", "sensorControl"];
 
-let availableDevices = [
+const mockDevices = [
   {
     id: "aaaaa",
     type: deviceType.light,
@@ -92,18 +92,7 @@ const deviceScanMock = [
   
 ]
 
-
-let networkDevices = [];
-
-
-
-
-
-
-
-
-
-
+let networkDevices = mockDevices;
 
 // ---------- States ----------
 var selectedDeviceData = null;
@@ -112,8 +101,9 @@ var isEditDevice = false;
 
 
 // ---------- Ajout d'appareil ----------
+
 function searchForDevice() {
-  /*
+  
   const form = document.getElementById("addDeviceForm");
   const formData = new FormData(form);
   let data = {};
@@ -124,7 +114,6 @@ function searchForDevice() {
   openModal("addDeviceModal");
 
   document.getElementById("formModalId").value = data["id"];
-  */
 
   /*
   fetch("/add-device", {
@@ -147,20 +136,6 @@ function searchForDevice() {
     alert("Error adding device");
   });
   */
-
-  fetch("/test", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  .then((res) => res.json())
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 }
 
 function scanForDevices() {
@@ -204,7 +179,7 @@ function createDevice() {
 
 
   addDevice(data);
-  loadDeviceList(availableDevices);
+  loadDeviceList();
 
   form.reset();
   closeModal("addDeviceModal");
@@ -271,7 +246,7 @@ function closeModal(modalId) {
 
 // ---------- Device management ----------
 function addDevice(deviceData) {
-  availableDevices.push(deviceData);
+  networkDevices.push(deviceData);
 }
 
 function toggleEditDevice() {
@@ -308,61 +283,32 @@ function saveDevice() {
   }
 
   // Backend request
-  fetchPostModifyDeviceInfo({
+  post_modifyDeviceInfo({
     id: selectedDeviceData["id"],
     key: "name",
     value: data["deviceNameField"]
   })
 
-  // Temporary mock result
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === selectedDeviceData["id"]) {
-      availableDevices[i].name = data["deviceNameField"];
-    }
-  }
-
-  loadDeviceList(availableDevices);
+  mockModifyData("name", data["deviceNameField"]);
   toggleEditDevice();
 }
 
 function deleteDevice() {
   let index = -1;
 
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === selectedDeviceData["id"]) {
+  for (let i = 0; i < networkDevices.length; i++) {
+    if(networkDevices[i]["id"] === selectedDeviceData["id"]) {
       index = i;
+      break;
     }
   }
 
-  if (index > -1) {
-    availableDevices.splice(index, 1);
+  if (index >= 0) {
+    networkDevices.splice(index, 1);
   }
 
-  loadDeviceList(availableDevices);
+  loadDeviceList();
   closeModal("controlDeviceModal");
-}
-
-function switchDeviceState(input) {
-  console.log(input.checked);
-
-  // Envoyer au backend 
-
-  // Attendre le retour pour savoir que c'est changer
-
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === selectedDeviceData["id"]) {
-      if(input.checked) {
-        availableDevices[i].status = deviceStatus.on;
-      } else {
-        availableDevices[i].status = deviceStatus.off;
-      }
-
-      selectedDeviceData = availableDevices[i];
-    }
-  }
-
-  loadDeviceList(availableDevices);
-  showDeviceControl();
 }
 
 function setDeviceStatus(value) {
@@ -372,21 +318,13 @@ function setDeviceStatus(value) {
   }
 
   // Envoyer au backend 
-  fetchPostModifyDeviceParam({
+  post_modifyDeviceParam({
     id: selectedDeviceData["id"],
     key: "status",
     value: value ? deviceStatus.on : deviceStatus.off
   });
 
-  // Mock device info modification
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === selectedDeviceData["id"]) {
-      availableDevices[i].status = value ? deviceStatus.on : deviceStatus.off;
-      selectedDeviceData = availableDevices[i];
-      break;
-    }
-  }
-  loadDeviceList(availableDevices);
+  mockModifyData("status", value ? deviceStatus.on : deviceStatus.off);
   showDeviceControl();
 }
 
@@ -397,21 +335,13 @@ function setDeviceTemperature(value) {
   }
 
   // Envoyer au backend 
-  fetchPostModifyDeviceParam({
+  post_modifyDeviceParam({
     id: selectedDeviceData["id"],
     key: "temperature",
     value: value
   });
 
-  // Mock device info modification
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === selectedDeviceData["id"]) {
-      availableDevices[i].temperature = value;
-      selectedDeviceData = availableDevices[i];
-      break;
-    }
-  }
-  loadDeviceList(availableDevices);
+  mockModifyData("temperature", value);
   showDeviceControl();
 }
 
@@ -422,107 +352,19 @@ function setDeviceIntensity(value) {
   }
 
   // Envoyer au backend 
-  fetchPostModifyDeviceParam({
+  post_modifyDeviceParam({
     id: selectedDeviceData["id"],
     key: "intensity",
     value: value
   });
 
-  // Mock device info modification
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === selectedDeviceData["id"]) {
-      availableDevices[i].intensity = value;
-      selectedDeviceData = availableDevices[i];
-      break;
-    }
-  }
-  loadDeviceList(availableDevices);
+  mockModifyData("intensity", value);
   showDeviceControl();
 }
 
-
-
-
-
-
-
-
-
-
-
-function setDeviceParam(key, value) {
-
-  // Check if key exist
-  if(!selectedDeviceData.hasOwnProperty(key)) {
-    console.error("(" + key + ") not found in : " + Object.keys(selectedDeviceData));
-    return;
-  }
-
-  // Check if value is good
-  switch(key) {
-    case "status":
-      if (value === true || value === false) {
-        if(value === true) {
-          selectedDeviceData[key] = deviceStatus.on;
-        } else {
-          selectedDeviceData[key] = deviceStatus.off;
-        }
-      } else {
-        console.error("wrong value format for " + key);
-        return;
-      }
-      break;
-
-    case "temperature":
-      if (value >= 2700 && value <= 6500) {
-        selectedDeviceData[key] = value;
-
-      } else {
-        console.error("wrong value format for " + key);
-        return;
-      }
-      break;
-
-    case "intensity":
-      if (value >= 0 && value <= 100) {
-        selectedDeviceData[key] = value;
-      } else {
-        console.error("wrong value format for " + key);
-        return;
-      }
-      break;
-
-    default:
-      console.error(key + " can not be modified");
-      return;
-  }
-
-
-  // Envoyer au backend 
-  fetchPostModifyNetworkDevice({
-    id: selectedDeviceData.id,
-    field: key,
-    value: selectedDeviceData[key]
-  });
-
-
-
-
-
-  // Attendre le retour pour savoir que c'est changer
-
-  for (let i = 0; i < availableDevices.length; i++) {
-    if(availableDevices[i].id === selectedDeviceData["id"]) {
-      availableDevices[i] = selectedDeviceData;
-    }
-  }
-
-  loadDeviceList(availableDevices);
-  showDeviceControl();
-}
 
 // ---------- Device list ----------
-function loadDeviceList(devices) {
+function loadDeviceList() {
   // Add to table
   const table = document.getElementById("devicesContainer");
 
@@ -532,7 +374,7 @@ function loadDeviceList(devices) {
   }
 
   // Load devices in device list
-  devices.forEach((i) => {
+  networkDevices.forEach((i) => {
     const card = createDeviceCard(i);
     table.appendChild(card);
   });
@@ -746,7 +588,18 @@ function setRangeValue(id, value) {
   range.dispatchEvent(new Event("input"));
 }
 
+function mockModifyData(key, value) {
+  // Temporary mock result
+  for (let i = 0; i < networkDevices.length; i++) {
+    if(networkDevices[i]["id"] === selectedDeviceData["id"]) {
+      networkDevices[i][key] = value;
+      selectedDeviceData = networkDevices[i];
+      break;
+    }
+  }
 
+  loadDeviceList();
+}
 
 //Remove devices table if no devices are present
 document.addEventListener("DOMContentLoaded", () => {
@@ -775,11 +628,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ---------- FETCH ----------
-function fetchGetNetworkDevices() {
+function get_networkDevices() {
   // Request : start spinner -> fetch data -> wait for response
   // Response : 
-
-
   fetch("/network/devices", {
     method: "GET",
     headers: {
@@ -789,14 +640,15 @@ function fetchGetNetworkDevices() {
   .then((res) => res.json())
   .then((response) => {
     console.log(response);
-    loadDeviceList(response);
+    networkDevices = response;
+    loadDeviceList();
   })
   .catch((err) => {
     console.log(err);
   });
 }
 
-function fetchPostModifyDeviceInfo(data) {
+function post_modifyDeviceInfo(data) {
   fetch("/modify-device-info", {
     method: "POST",
     headers: {
@@ -808,15 +660,15 @@ function fetchPostModifyDeviceInfo(data) {
   .then((result) => {
     console.log(result);
     //alert("Device info modified successfully");
-    //fetchGetNetworkDevices();
+    //get_networkDevices();
   })
   .catch((err) => {
     console.log(err);
-    alert("Error modifying device info");
+    //alert("Error modifying device info");
   });
 }
 
-function fetchPostModifyDeviceParam(data) {
+function post_modifyDeviceParam(data) {
   fetch("/modify-device-param", {
     method: "POST",
     headers: {
@@ -828,11 +680,11 @@ function fetchPostModifyDeviceParam(data) {
   .then((result) => {
     console.log(result);
     //alert("Device param modified successfully");
-    //fetchGetNetworkDevices();
+    //get_networkDevices();
   })
   .catch((err) => {
     console.log(err);
-    alert("Error modifying device param");
+    //alert("Error modifying device param");
   });
 }
 
@@ -849,16 +701,16 @@ function initSetup() {
     select.appendChild(opt);
   }
 
-  loadDeviceList(availableDevices);
-
-  fetchGetNetworkDevices()
-
-  
-
   // setup range
   setupRangeValue("lightIntensity");
   setupRangeValue("lightTemperature");
   setupRangeValue("dimmerIntensity");
+
+  loadDeviceList();
+
+  // Start thread network
+
+  get_networkDevices()
 }
 
 initSetup();
