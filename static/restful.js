@@ -111,7 +111,7 @@ function searchForDevice() {
   }
   form.reset();
 
-  get_searchDevice({
+  post_searchDevice({
     id: data["id"],
     password: data["password"]
   })
@@ -160,7 +160,11 @@ function createDevice() {
   data["id"] = document.getElementById("formModalId").value;
   data["status"] = deviceStatus.on;
   
-
+  post_addDevice({
+    id: data["id"],
+    name: data["name"],
+    type: data["type"],
+  });
 
   addDevice(data);
   loadDeviceList();
@@ -632,9 +636,10 @@ function get_devices() {
   });
 }
 
-function get_searchDevice(data) {
+function post_searchDevice(data) {
+  console.log(data);
   fetch("/network/search-device", {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
