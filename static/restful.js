@@ -103,7 +103,6 @@ var isEditDevice = false;
 // ---------- Ajout d'appareil ----------
 
 function searchForDevice() {
-  
   const form = document.getElementById("addDeviceForm");
   const formData = new FormData(form);
   let data = {};
@@ -111,31 +110,16 @@ function searchForDevice() {
     data[item[0]] = item[1];
   }
   form.reset();
+
+  get_searchDevice({
+    id: data["id"],
+    password: data["password"]
+  })
+
+  // If device has been found
   openModal("addDeviceModal");
 
   document.getElementById("formModalId").value = data["id"];
-
-  /*
-  fetch("/add-device", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-  .then((res) => res.json())
-  .then((result) => {
-    console.log(result);
-    form.reset();
-    const modal = document.getElementById("addDeviceModal");
-    modal.style.display = "flex";
-    document.getElementById("formModalId").value = data["id"];
-  })
-  .catch((err) => {
-    console.log(err);
-    alert("Error adding device");
-  });
-  */
 }
 
 function scanForDevices() {
@@ -628,7 +612,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ---------- FETCH ----------
-function get_networkDevices() {
+function get_devices() {
   // Request : start spinner -> fetch data -> wait for response
   // Response : 
   fetch("/network/devices", {
@@ -644,12 +628,69 @@ function get_networkDevices() {
     loadDeviceList();
   })
   .catch((err) => {
+    console.error(err);
+  });
+}
+
+function get_searchDevice(data) {
+  fetch("/network/search-device", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((response) => {
+    console.log(response);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
+
+  /*
+  fetch("/add-device", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+    form.reset();
+    const modal = document.getElementById("addDeviceModal");
+    modal.style.display = "flex";
+    document.getElementById("formModalId").value = data["id"];
+  })
+  .catch((err) => {
     console.log(err);
+    alert("Error adding device");
+  });
+  */
+}
+
+function post_addDevice(data) {
+  fetch("/network/add-device", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((err) => {
+    console.error(err);
   });
 }
 
 function post_modifyDeviceInfo(data) {
-  fetch("/modify-device-info", {
+  fetch("/network/modify-device-info", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -660,16 +701,16 @@ function post_modifyDeviceInfo(data) {
   .then((result) => {
     console.log(result);
     //alert("Device info modified successfully");
-    //get_networkDevices();
+    //get_devices();
   })
   .catch((err) => {
-    console.log(err);
+    console.error(err);
     //alert("Error modifying device info");
   });
 }
 
 function post_modifyDeviceParam(data) {
-  fetch("/modify-device-param", {
+  fetch("/network/modify-device-param", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -680,10 +721,10 @@ function post_modifyDeviceParam(data) {
   .then((result) => {
     console.log(result);
     //alert("Device param modified successfully");
-    //get_networkDevices();
+    //get_devices();
   })
   .catch((err) => {
-    console.log(err);
+    console.error(err);
     //alert("Error modifying device param");
   });
 }
@@ -710,7 +751,7 @@ function initSetup() {
 
   // Start thread network
 
-  get_networkDevices()
+  get_devices()
 }
 
 initSetup();
