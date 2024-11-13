@@ -282,20 +282,12 @@ function saveDevice() {
 }
 
 function deleteDevice() {
-  let index = -1;
+  // Backend request
+  post_removeDevice({
+    id: selectedDeviceData["id"]
+  })
 
-  for (let i = 0; i < networkDevices.length; i++) {
-    if(networkDevices[i]["id"] === selectedDeviceData["id"]) {
-      index = i;
-      break;
-    }
-  }
-
-  if (index >= 0) {
-    networkDevices.splice(index, 1);
-  }
-
-  loadDeviceList();
+  mockDeleteDevice(selectedDeviceData["id"]);
   closeModal("controlDeviceModal");
 }
 
@@ -589,6 +581,25 @@ function mockModifyData(key, value) {
   loadDeviceList();
 }
 
+function mockDeleteDevice(id) {
+  let index = -1;
+
+  for (let i = 0; i < networkDevices.length; i++) {
+
+    if(networkDevices[i]["id"] === id) {
+      index = i;
+      break;
+    }
+  }
+
+  if (index >= 0) {
+    networkDevices.splice(index, 1);
+  }
+
+  loadDeviceList();
+}
+
+
 //Remove devices table if no devices are present
 document.addEventListener("DOMContentLoaded", () => {
   /*
@@ -679,6 +690,23 @@ function post_searchDevice(data) {
 
 function post_addDevice(data) {
   fetch("/network/add-device", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+}
+
+function post_removeDevice(data) {
+  fetch("/network/remove-device", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
