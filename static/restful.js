@@ -638,8 +638,8 @@ function get_devices() {
     },
   })
   .then((response) => {
-    console.log("Received get response");
-
+    console.log("get_devices : ");
+    console.log(response);
 
     const reader = response.body.getReader();
     const textDecoder = new TextDecoder("utf-8");
