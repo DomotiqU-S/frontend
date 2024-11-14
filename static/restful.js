@@ -274,7 +274,8 @@ function saveDevice() {
   post_modifyDeviceInfo({
     id: selectedDeviceData["id"],
     key: "name",
-    value: data["deviceNameField"]
+    oldValue: selectedDeviceData["name"],
+    newValue: data["deviceNameField"]
   })
 
   mockModifyData("name", data["deviceNameField"]);
@@ -354,8 +355,8 @@ function loadDeviceList() {
   }
 
   // Load devices in device list
-  networkDevices.forEach((i) => {
-    const card = createDeviceCard(i);
+  networkDevices.forEach((value, index) => {
+    const card = createDeviceCard(value);
     table.appendChild(card);
   });
 }
@@ -633,12 +634,42 @@ function get_devices() {
   fetch("/network/devices", {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "text/plain",
     },
   })
-  .then((res) => res.json())
   .then((response) => {
-    console.log(response);
+    console.log("Received get response");
+
+
+    const reader = response.body.getReader();
+    const textDecoder = new TextDecoder("utf-8");
+    let result = '';
+
+    async function read() {
+      const { done, value } = await reader.read();
+      if (done) {
+        return result;
+      }
+      result += textDecoder.decode(value, { stream: true });;
+      return read();
+    }
+    return read();
+  })
+  .then((response) => {
+    let lines = response.split("\n");
+    let result = [];
+
+    lines.forEach((value, index) => {
+      try {
+        result.push(JSON.parse(value));
+      } catch (e) {
+
+      }
+    });
+
+    return result;
+  })
+  .then((response) => {
     networkDevices = response;
     loadDeviceList();
   })
