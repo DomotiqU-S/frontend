@@ -113,13 +113,41 @@ function searchForDevice() {
 
   post_searchDevice({
     id: data["id"],
-    password: data["password"]
+    password: data["password"],
+    connectionType: data["connectionType"],
+    wifi_ssid: data["wifi_ssid"],
+    wifi_pwd: data["wifi_pwd"],
+    thread_tlvs: data["thread_tlvs"],
   })
 
   // If device has been found
   openModal("addDeviceModal");
 
   document.getElementById("formModalId").value = data["id"];
+}
+
+function setConnectionType() {
+  const form = document.getElementById("addDeviceForm");
+  const formData = new FormData(form);
+  let data = {};
+  for (let item of formData) {
+    data[item[0]] = item[1];
+  }
+  form.reset();
+
+
+  const wifiFields = document.getElementById("wifiConnectionFields");
+  const threadFields = document.getElementById("threadConnectionFields");
+
+  /*
+  if(data["connectionType"] === "wifi") {
+    wifiFields.classList.remove("hidden");
+    threadFields.classList.add("hidden");
+  } else if (data["connectionType"] === "thread") {
+    wifiFields.classList.add("hidden");
+    threadFields.classList.remove("hidden");
+  }
+    */
 }
 
 function scanForDevices() {

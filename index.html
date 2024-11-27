@@ -49,6 +49,45 @@
             <input name="password" type="text" class="form-control" required />
           </div>
         </div>
+
+        <div class="row">
+          <label for="connectionType">Type</label>
+          <select id="deviceConnectionTypeSelection" name="connectionType" onchange="setConnectionType()">
+            <option selected disabled>Sélectionner un type</option>
+            <option value="wifi">Wifi</option>
+            <option value="thread">Thread</option>
+          </select>
+        </div>
+
+        <div id="wifiConnectionFields" class="row">
+          <div class="col-md-6">
+            <label for="wifi_ssid">SSID du wifi</label>
+            <input name="wifi_ssid" type="text" class="form-control" required maxlength="100"/>
+          </div>
+  
+          <div class="col-md-6">
+            <label for="wifi_pwd">Mot de passe du wifi</label>
+            <input name="wifi_pwd" type="text" class="form-control" required />
+          </div>
+        </div>
+
+        <div id="threadConnectionFields" class="row">
+          <div class="col-md-6">
+            <label for="thread_tlvs">Thread tlvs</label>
+            <input name="thread_tlvs" type="text" class="form-control" required maxlength="100"/>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
         
         <div class="btn-section">
           <input name="addButton" type="submit" class="btn btn-primary" value="Ajouter un appareil" />
