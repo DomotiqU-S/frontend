@@ -133,7 +133,6 @@ function setConnectionType() {
   for (let item of formData) {
     data[item[0]] = item[1];
   }
-  form.reset();
 
 
   const wifiFields = document.getElementById("wifiConnectionFields");
