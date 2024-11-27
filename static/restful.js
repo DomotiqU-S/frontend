@@ -127,6 +127,11 @@ function searchForDevice() {
 }
 
 function setConnectionType() {
+  const button = document.getElementById("addFormSubmitButton");
+  button.disabled = false;
+
+
+
   const form = document.getElementById("addDeviceForm");
   const formData = new FormData(form);
   let data = {};
@@ -136,17 +141,54 @@ function setConnectionType() {
 
 
   const wifiFields = document.getElementById("wifiConnectionFields");
+  const wifiFields2 = document.getElementById("wifiConnectionFields2");
   const threadFields = document.getElementById("threadConnectionFields");
 
-  /*
   if(data["connectionType"] === "wifi") {
-    wifiFields.classList.remove("hidden");
     threadFields.classList.add("hidden");
-  } else if (data["connectionType"] === "thread") {
+
+    if(threadFields.childElementCount > 1) {
+      threadFields.removeChild(threadFields.lastChild);
+    }
+
+    let temp = document.createElement("input");
+    temp.name = "wifi_ssid";
+    temp.type = "text";
+    temp.classList.add("form-control");
+    temp.required = true;
+    wifiFields.appendChild(temp);
+
+    temp = document.createElement("input");
+    temp.name = "wifi_pwd";
+    temp.type = "text";
+    temp.classList.add("form-control");
+    temp.required = true;
+    wifiFields2.appendChild(temp);
+
+    wifiFields.classList.remove("hidden");
+    wifiFields2.classList.remove("hidden");
+  }
+  else if (data["connectionType"] === "thread") {
     wifiFields.classList.add("hidden");
+    wifiFields2.classList.add("hidden");
+
+    if(wifiFields.childElementCount > 1) {
+      wifiFields.removeChild(wifiFields.lastChild);
+    }
+
+    if(wifiFields2.childElementCount > 1) {
+      wifiFields2.removeChild(wifiFields2.lastChild);
+    }
+
+    let temp = document.createElement("input");
+    temp.name = "thread_tlvs";
+    temp.type = "text";
+    temp.classList.add("form-control");
+    temp.required = true;
+    threadFields.appendChild(temp);
+
     threadFields.classList.remove("hidden");
   }
-    */
 }
 
 function scanForDevices() {
