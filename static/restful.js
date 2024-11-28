@@ -111,6 +111,24 @@ function searchForDevice() {
   }
   form.reset();
 
+  // Remove the other fields
+
+  const wifiFields = document.getElementById("wifiConnectionFields");
+  const wifiFields2 = document.getElementById("wifiConnectionFields2");
+  const threadFields = document.getElementById("threadConnectionFields");
+  const button = document.getElementById("addFormSubmitButton");
+  button.disabled = true;
+
+  if(wifiFields.childElementCount > 1) wifiFields.removeChild(wifiFields.lastChild);
+  if(wifiFields2.childElementCount > 1) wifiFields2.removeChild(wifiFields2.lastChild);
+  if(threadFields.childElementCount > 1) threadFields.removeChild(threadFields.lastChild);
+
+  if(!wifiFields.classList.contains("hidden")) wifiFields.classList.add("hidden");
+  if(!wifiFields2.classList.contains("hidden")) wifiFields2.classList.add("hidden");
+  if(!threadFields.classList.contains("hidden")) threadFields.classList.add("hidden");
+
+  
+
   post_searchDevice({
     id: data["id"],
     password: data["password"],
@@ -138,7 +156,6 @@ function setConnectionType() {
   for (let item of formData) {
     data[item[0]] = item[1];
   }
-
 
   const wifiFields = document.getElementById("wifiConnectionFields");
   const wifiFields2 = document.getElementById("wifiConnectionFields2");
