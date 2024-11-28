@@ -92,7 +92,7 @@ const deviceScanMock = [
   
 ]
 
-let networkDevices = mockDevices;
+let networkDevices = [];
 
 // ---------- States ----------
 var selectedDeviceData = null;
@@ -126,8 +126,6 @@ function searchForDevice() {
   if(!wifiFields.classList.contains("hidden")) wifiFields.classList.add("hidden");
   if(!wifiFields2.classList.contains("hidden")) wifiFields2.classList.add("hidden");
   if(!threadFields.classList.contains("hidden")) threadFields.classList.add("hidden");
-
-  
 
   post_searchDevice({
     id: data["id"],
