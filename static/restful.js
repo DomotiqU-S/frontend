@@ -427,6 +427,13 @@ function setDeviceIntensity(value) {
   showDeviceControl();
 }
 
+function subscribeDevice() {
+  post_subscribeDevice({
+    id: selectedDeviceData["id"],
+    type: selectedDeviceData["type"],
+  });
+}
+
 
 // ---------- Device list ----------
 function loadDeviceList() {
@@ -877,6 +884,27 @@ function post_modifyDeviceParam(data) {
   });
 }
 
+function post_subscribeDevice(data) {
+  fetch("/network/subscribe-device", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+    //alert("Device param modified successfully");
+    //get_devices();
+  })
+  .catch((err) => {
+    console.error(err);
+    //alert("Error modifying device param");
+  });
+}
+
+
 
 // ---------- INIT ----------
 function initSetup() {
@@ -899,7 +927,7 @@ function initSetup() {
 
   // Start thread network
 
-  get_devices()
+  //get_devices()
 }
 
 initSetup();

@@ -9,6 +9,7 @@
   <link href="/static/bootstrap.min.css" type="text/css" rel="stylesheet" />
   <script src="/static/restful.js" defer="true"></script>
   <link href="/favicon.ico" rel="icon" />
+  <link href="/favicon.ico" rel="icon" />
 
   <!-- <link href="/static/bootstrap.min.css" rel="stylesheet"> -->
   <!--  <script src="/static/jquery.min.js"></script> -->
@@ -17,18 +18,12 @@
   <script src="https://d3js.org/d3.v3.min.js"></script>
 </head>
 
-<body>
-  <header id="header" class="pageHeader" data-scrollto-offset="0">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12 text-center">
-          <h1>Interface OpenHouse</h1>
-        </div>
-      </div>
-    </div>
+<body class="pageBody">
+  <header id="header" class="pageHeader">
+    <h1>Interface OpenHouse</h1>
   </header>
 
-  <main id="main" class="container">
+  <main id="main" class="pageMain">
     <div class="header">
       <h2>Centre de controle du réseau</h2>
     </div>
@@ -240,7 +235,8 @@
               <div id="controlPageStatus" class="material-symbols-outlined icon">power_settings_circle</div>
             </div>
   
-            <div>
+            <div class="buttonContainer">
+              <button class="controlPageHeaderButton" onclick="subscribeDevice()">Subscribe</button>
               <button class="material-symbols-outlined icon controlPageHeaderButton" onclick="toggleEditDevice()">edit</button>
               <button class="material-symbols-outlined icon controlPageHeaderButton" onclick="deleteDevice()">delete</button>
             </div>
