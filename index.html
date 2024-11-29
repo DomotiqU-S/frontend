@@ -6,16 +6,13 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>OpenHouse Interface</title>
   <link href="/static/style.css" type="text/css" rel="stylesheet" />
-  <link href="/static/bootstrap.min.css" type="text/css" rel="stylesheet" />
   <script src="/static/restful.js" defer="true"></script>
-  <link href="/favicon.ico" rel="icon" />
   <link href="/favicon.ico" rel="icon" />
 
   <!-- <link href="/static/bootstrap.min.css" rel="stylesheet"> -->
   <!--  <script src="/static/jquery.min.js"></script> -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <!-- <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script> -->
+  <!-- <script src="https://d3js.org/d3.v3.min.js"></script> -->
 </head>
 
 <body class="pageBody">
@@ -28,171 +25,60 @@
       <h2>Centre de controle du réseau</h2>
     </div>
 
-    <section id="addDevicesSection" class="sub-section">
+    <div id="addDeviceSection">
       <h3>Ajoutez un appareil</h3>
 
-      <form action="javascript:searchForDevice()" placeholder="Ajouter un appareil" id="addDeviceForm">
+      <form action="javascript:searchForDevice()" id="addDeviceForm" class="addDeviceForm">
 
         <div class="row">
-          <div class="col-md-6">
+          <div class="cell">
             <label for="deviceId">Id de l'appareil</label>
-            <input name="id" type="text" class="form-control" required maxlength="100"/>
+            <input name="id" type="text" class="control" required maxlength="100"/>
           </div>
   
-          <div class="col-md-6">
+          <div class="cell">
             <label for="devicePassword">Mot de passe de l'appareil</label>
-            <input name="password" type="text" class="form-control" required />
+            <input name="password" type="text" class="control" required />
           </div>
         </div>
 
         <div class="row">
-          <div class="col-md-6">
+          <div class="cell">
             <label for="connectionType">Type</label>
-            <select id="deviceConnectionTypeSelection" name="connectionType" class="form-control" onchange="setConnectionType()" required >
+            <select id="deviceConnectionTypeSelection" name="connectionType" class="control" onchange="setConnectionType()" required >
               <option selected disabled hidden>Sélectionner un type</option>
               <option value="wifi">Wifi</option>
               <option value="thread">Thread</option>
             </select>
           </div>
-          
         </div>
 
         <div class="row">
-          <div class="col-md-6 hidden" id="wifiConnectionFields">
+          <div class="cell hidden" id="wifiConnectionFields">
             <label for="wifi_ssid">SSID du wifi</label>
           </div>
   
-          <div class="col-md-6 hidden" id="wifiConnectionFields2">
+          <div class="cell hidden" id="wifiConnectionFields2">
             <label for="wifi_pwd">Mot de passe du wifi</label>
           </div>
 
-          <div class="col-md-6 hidden" id="threadConnectionFields">
+          <div class="cell hidden" id="threadConnectionFields">
             <label for="thread_tlvs">Thread tlvs</label>
           </div>
         </div>
 
-        <div class="btn-section">
-          <input name="addButton" type="submit" class="btn btn-primary" value="Ajouter un appareil" id="addFormSubmitButton" disabled/>
-          
+        <div class="row">
+          <input name="addButton" type="submit" class="button" value="Ajouter un appareil" id="addFormSubmitButton" disabled/>
         </div>
       </form>
-    </section>
+    </div>
 
-    <img src="switch.svg"/>
-
-    <section id="scanForDeviceSection" class="sub-section" style="display: none;">
-      <div class="scanHeader">
-        <h3>Trouver un appareil</h3>
-        <button class="btn btn-primary formButton" onclick="scanForDevices()">
-          <span class="material-symbols-outlined smallIcon">search</span> Trouver un appareil 
-        </button>
-      </div>
-
-      <div>
-        <table class="devices-table">
-          <thead id="scanDevicesListHead">
-            <tr>
-              <th>Id</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody id="scanDevicesListBody">
-          </tbody>
-        </table>
-      </div>
-
-
-
-
-      
-    </section>
-
-    <section id="devicesList" class="sub-section" style="display: none;">
-      <h3>Liste des appareils sur le réseaux</h3>
-
-      <div class="row">
-        
-        <table class="devices-table">
-          <thead id="devicesListHead">
-            <tr>
-              <th>Id</th>
-              <th>Nom</th>
-              <th>Type</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="devicesListBody">
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="devicesList2" class="sub-section">
+    <div id="devicesList2">
       <h3>Liste des appareils sur le réseaux</h3>
       <div id="devicesContainer" class="deviceList">
 
       </div>
-    </section>
-
-    <section id="Automation" class="sub-section" style="display: none;">
-      <div class="container">
-        <div class="section-header default-margin">
-          <h2>
-            Thread Network <span style="color: #0ea2bd">Automation</span>
-          </h2>
-          <p>The different automations</p>
-        </div>
-        <div class="part">
-          <hr />
-          <hr />
-        </div>
-      </div>
-    </section>
-
-    <section id="Topology" class="sub-section" style="display: none;">
-      <div class="container">
-        <div class="section-header default-margin">
-          <h2>Thread Network <span style="color: #0ea2bd">Topology</span></h2>
-          <p>
-            The network topology structure of Thread will be shown in a more
-            intuitive and detailed manner here.
-          </p>
-        </div>
-        <div class="part">
-          <hr />
-          <div class="row">
-            <div class="col-md-3 col-md-offset-1">
-              <h4 style="font-weight: 800">
-                Network Name: &nbsp;<span id="topology_netwotkname" style="color: gray">
-                  unknown</span>
-              </h4>
-            </div>
-            <div class="col-md-2">
-              <h4 style="font-weight: 800">
-                Leader: &nbsp;<span id="topology_leader" style="color: gray">
-                  unknown</span>
-              </h4>
-            </div>
-            <div class="col-md-3">
-              <h4 style="font-weight: 800">
-                Router Number: &nbsp;<span id="topology_router_number" style="color: gray">
-                  unknown</span>
-              </h4>
-            </div>
-            <div class="col-md-3">
-              <button id="btn_topology" type="submit" value="Running" style="font-weight: bold"
-                onclick="http_server_build_thread_network_topology(this)">
-                Start Topology
-              </button>
-            </div>
-          </div>
-          <hr />
-          <!-- <div class="topology-graph"> -->
-          <div class="d3graph" id="tolology_canvas"></div>
-          <!-- </div> -->
-        </div>
-      </div>
-    </section>
+    </div>
 
 
     <!-- MODALS -->
@@ -204,18 +90,32 @@
         </div>
         
         <form action="javascript:createDevice()" class="modalContent">
-          <label for="id">Id</label>
-          <input type="text" disabled id="formModalId" name="id">
-          <label for="name">Nom</label>
-          <input type="text" name="name">
-          <label for="type">Type</label>
-          <select id="deviceTypeSelection" name="type">
-            <option selected disabled>Sélectionner un type</option>
-          </select>
+          <div class="row">
+            <div class="cell">
+              <label for="id">Id</label>
+              <input type="text" disabled id="formModalId" name="id">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="cell">
+              <label for="name">Nom</label>
+              <input type="text" name="name">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="cell">
+              <label for="type">Type</label>
+              <select id="deviceTypeSelection" name="type" class="control" onchange="setDeviceType()">
+                <option selected disabled hidden>Sélectionner un type</option>
+              </select>
+            </div>
+          </div>
+
           <div class="btn-section">
-            <input name="addButton" type="submit" class="btn btn-primary"
-              value="Créer les informations de l'appareil" />
-            <input name="cancelButton" type="button" class="btn btn-primary" value="Annuler" onclick="closeModal('addDeviceModal')" />
+            <input id="addDeviceAddButton" name="addButton" type="submit" class="formButton" value="Créer les informations de l'appareil" disabled/>
+            <input name="cancelButton" type="button" class="formButton" value="Annuler" onclick="closeModal('addDeviceModal')" />
           </div>
         </form>
       </div>
@@ -224,28 +124,27 @@
     <div id="controlDeviceModal" class="modal" onclick="closeModal(this.id)">
       <div class="modalContainer" onclick="event.stopPropagation(); event.cancelBubble = true;">
         <div class="modalHeader single">
-          <button class="material-symbols-outlined icon" onclick="closeModal('controlDeviceModal')">close</button>
+          <button class="controlPageHeaderButton" onclick="closeModal('controlDeviceModal')">close</button>
         </div>
 
         <div id="controlPage" class="controlPage">
           <div class="controlPageHeader">
             <div class="title">
-              <div id="controlPageIcon" class="material-symbols-outlined icon">lightbulb</div>
               <h3 id="controlPageTitle">Ampoule</h3>
-              <div id="controlPageStatus" class="material-symbols-outlined icon">power_settings_circle</div>
+              <div id="controlPageStatus" class="statusIcon"></div>
             </div>
   
             <div class="buttonContainer">
               <button class="controlPageHeaderButton" onclick="subscribeDevice()">Subscribe</button>
-              <button class="material-symbols-outlined icon controlPageHeaderButton" onclick="toggleEditDevice()">edit</button>
-              <button class="material-symbols-outlined icon controlPageHeaderButton" onclick="deleteDevice()">delete</button>
+              <button class="controlPageHeaderButton" onclick="toggleEditDevice()">Modifier</button>
+              <button class="controlPageHeaderButton" onclick="deleteDevice()">Supprimer</button>
             </div>
           </div>
 
           <form id="controlPageForm" class="controlPageForm readonly" action="javascript:saveDevice()">
             <label for="deviceNameField">Nom : </label>
             <input id="deviceNameField" class="textField" type="text" name="deviceNameField" readonly/>
-            <input type="submit" value="save" class="material-symbols-outlined icon saveButton"/>
+            <input type="submit" value="save" class="saveButton"/>
           </form>
 
           <form action="" id="lightControl" class="controls hidden">
@@ -306,9 +205,7 @@
   </main>
 
   <footer id="footer" class="footer">
-    <div class="footer-legal text-center">
-      <h2>Interface développée par OpenHouse 2024</h2>
-    </div>
+    <h2>Interface développée par OpenHouse 2024</h2>
   </footer>
 </body>
 

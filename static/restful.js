@@ -169,14 +169,14 @@ function setConnectionType() {
     let temp = document.createElement("input");
     temp.name = "wifi_ssid";
     temp.type = "text";
-    temp.classList.add("form-control");
+    temp.classList.add("control");
     temp.required = true;
     wifiFields.appendChild(temp);
 
     temp = document.createElement("input");
     temp.name = "wifi_pwd";
     temp.type = "text";
-    temp.classList.add("form-control");
+    temp.classList.add("control");
     temp.required = true;
     wifiFields2.appendChild(temp);
 
@@ -198,7 +198,7 @@ function setConnectionType() {
     let temp = document.createElement("input");
     temp.name = "thread_tlvs";
     temp.type = "text";
-    temp.classList.add("form-control");
+    temp.classList.add("control");
     temp.required = true;
     threadFields.appendChild(temp);
 
@@ -230,6 +230,13 @@ function scanForDevices() {
       //showDevicePage(deviceData);
     };
   })
+}
+
+function setDeviceType() {
+
+  const temp = document.getElementById("addDeviceAddButton");
+  temp.disabled = false;
+  
 }
 
 function createDevice() {
@@ -467,12 +474,11 @@ function createDeviceCard(deviceData) {
   // Set icon header
   const header = document.createElement("div");
   header.classList.add("deviceCardHeader");
-  const deviceIcon = getDeviceIcon(type);
+  const deviceName = document.createElement("h4");
+  deviceName.innerHTML = type;
 
   const statusIcon = document.createElement("div");
-  statusIcon.innerHTML = "power_settings_circle";
-  statusIcon.classList.add("material-symbols-outlined");
-  statusIcon.classList.add("icon");
+  statusIcon.classList.add("statusIcon");
 
   if(status === deviceStatus.on) {
     statusIcon.classList.add("on")
@@ -480,7 +486,7 @@ function createDeviceCard(deviceData) {
     statusIcon.classList.add("off")
   }
 
-  header.appendChild(deviceIcon);
+  header.appendChild(deviceName);
   header.appendChild(statusIcon);
 
   card.appendChild(header);
@@ -515,23 +521,19 @@ function showDeviceControl() {
   openModal("controlDeviceModal");
   
   // Load info in modal
-  const icon = document.getElementById("controlPageIcon");
   const title = document.getElementById("controlPageTitle");
   const statusIcon = document.getElementById("controlPageStatus");
 
   switch(type) {
     case deviceType.light:
-      icon.innerHTML = "lightbulb";
       title.innerHTML = "Ampoule";
       break;
 
     case deviceType.dimmer:
-      icon.innerHTML = "switch";
       title.innerHTML = "Gradateur";
       break;
 
     case deviceType.sensor:
-      icon.innerHTML = "sensors";
       title.innerHTML = "Capteur d'environnement";
       break;
   }
